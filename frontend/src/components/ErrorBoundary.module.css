@@ -1,0 +1,68 @@
+.panel {
+  max-width: 46rem;
+  margin: 3rem auto;
+  padding: 2.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--bad);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.eyebrow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bad);
+  margin: 0 0 0.75rem;
+}
+
+.title {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  margin: 0 0 0.75rem;
+}
+
+.body {
+  color: var(--ink-muted);
+  max-width: 52ch;
+  margin: 0 0 1.75rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+}
+
+.detailToggle {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.detailToggle:hover {
+  color: var(--ink);
+}
+
+.detail {
+  margin: 0.9rem 0 0;
+  padding: 0.9rem 1rem;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+}

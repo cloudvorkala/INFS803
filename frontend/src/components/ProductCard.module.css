@@ -1,0 +1,103 @@
+/* No card chrome — the covers supply the structure, the way books do on a shelf. */
+
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.coverLink {
+  position: relative;
+  display: block;
+  margin-bottom: 0.85rem;
+  transition: transform 0.18s ease;
+}
+
+.coverLink::after {
+  /* A thin edge so a pale cover still reads as an object on the page. */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+}
+
+.card:hover .coverLink {
+  transform: translateY(-4px);
+}
+
+.oosFlag {
+  position: absolute;
+  inset: auto 0 0 0;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0.34rem 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.3rem 0 0.1rem;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+}
+
+.title a {
+  color: var(--ink);
+}
+
+.title a:hover {
+  color: var(--cloth);
+  text-decoration: none;
+}
+
+.author {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin: 0 0 0.8rem;
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.price {
+  font-size: 1.02rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.stockOut {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.lowStock {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--warn);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card:hover .coverLink {
+    transform: none;
+  }
+}
