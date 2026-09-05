@@ -1,0 +1,979 @@
+{
+  "Paperbound-Products": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-026"
+          },
+          "title": {
+            "S": "Ninety Seconds"
+          },
+          "author": {
+            "S": "Rania Haddad"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "22"
+          },
+          "stock": {
+            "N": "14"
+          },
+          "isbn": {
+            "S": "978-1-3548-8936-7"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-026.svg"
+          },
+          "description": {
+            "S": "The gap in the CCTV is ninety seconds long. Everything happened inside it."
+          },
+          "searchText": {
+            "S": "ninety seconds rania haddad 978-1-3548-8936-7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-027"
+          },
+          "title": {
+            "S": "The Tenant Below"
+          },
+          "author": {
+            "S": "Rania Haddad"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "20.5"
+          },
+          "stock": {
+            "N": "18"
+          },
+          "isbn": {
+            "S": "978-1-6383-3812-3"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-027.svg"
+          },
+          "description": {
+            "S": "She hears her own conversations repeated through the floor, a day late."
+          },
+          "searchText": {
+            "S": "the tenant below rania haddad 978-1-6383-3812-3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-028"
+          },
+          "title": {
+            "S": "Small Hours"
+          },
+          "author": {
+            "S": "Anneke Vos"
+          },
+          "category": {
+            "S": "Poetry"
+          },
+          "price": {
+            "N": "18"
+          },
+          "stock": {
+            "N": "20"
+          },
+          "isbn": {
+            "S": "978-1-0335-2718-4"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-028.svg"
+          },
+          "description": {
+            "S": "Sixty short poems written between two and four in the morning across a single winter."
+          },
+          "searchText": {
+            "S": "small hours anneke vos 978-1-0335-2718-4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-029"
+          },
+          "title": {
+            "S": "Nine Bridges"
+          },
+          "author": {
+            "S": "Anneke Vos"
+          },
+          "category": {
+            "S": "Poetry"
+          },
+          "price": {
+            "N": "19.5"
+          },
+          "stock": {
+            "N": "13"
+          },
+          "isbn": {
+            "S": "978-1-1163-2717-5"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-029.svg"
+          },
+          "description": {
+            "S": "Each poem named for a crossing in the city where Vos grew up."
+          },
+          "searchText": {
+            "S": "nine bridges anneke vos 978-1-1163-2717-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-030"
+          },
+          "title": {
+            "S": "The Salt Book"
+          },
+          "author": {
+            "S": "Anneke Vos"
+          },
+          "category": {
+            "S": "Poetry"
+          },
+          "price": {
+            "N": "21"
+          },
+          "stock": {
+            "N": "8"
+          },
+          "isbn": {
+            "S": "978-1-0101-4860-9"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-030.svg"
+          },
+          "description": {
+            "S": "Poems about preservation: of fish, of grief, of a language with four remaining speakers."
+          },
+          "searchText": {
+            "S": "the salt book anneke vos 978-1-0101-4860-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-031"
+          },
+          "title": {
+            "S": "Field Notes for the Sleepless"
+          },
+          "author": {
+            "S": "Cormac Rea"
+          },
+          "category": {
+            "S": "Poetry"
+          },
+          "price": {
+            "N": "17.5"
+          },
+          "stock": {
+            "N": "16"
+          },
+          "isbn": {
+            "S": "978-1-7218-9225-9"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-031.svg"
+          },
+          "description": {
+            "S": "Short, plain, and unsparing. Rea writes insomnia as a kind of attention."
+          },
+          "searchText": {
+            "S": "field notes for the sleepless cormac rea 978-1-7218-9225-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-032"
+          },
+          "title": {
+            "S": "Bell, Book, Weather"
+          },
+          "author": {
+            "S": "Cormac Rea"
+          },
+          "category": {
+            "S": "Poetry"
+          },
+          "price": {
+            "N": "16.99"
+          },
+          "stock": {
+            "N": "23"
+          },
+          "isbn": {
+            "S": "978-1-0458-4574-0"
+          },
+          "publishedYear": {
+            "N": "2019"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-032.svg"
+          },
+          "description": {
+            "S": "Three sequences on ritual, reading, and the sky over the Atlantic."
+          },
+          "searchText": {
+            "S": "bell, book, weather cormac rea 978-1-0458-4574-0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-033"
+          },
+          "title": {
+            "S": "Instructions for a Garden"
+          },
+          "author": {
+            "S": "Beatriz Oliveira"
+          },
+          "category": {
+            "S": "Poetry"
+          },
+          "price": {
+            "N": "20"
+          },
+          "stock": {
+            "N": "11"
+          },
+          "isbn": {
+            "S": "978-1-6139-4672-5"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-033.svg"
+          },
+          "description": {
+            "S": "Every poem is phrased as a horticultural instruction. None of them is about gardening."
+          },
+          "searchText": {
+            "S": "instructions for a garden beatriz oliveira 978-1-6139-4672-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-034"
+          },
+          "title": {
+            "S": "The Blue Hour Almanac"
+          },
+          "author": {
+            "S": "Beatriz Oliveira"
+          },
+          "category": {
+            "S": "Poetry"
+          },
+          "price": {
+            "N": "18.5"
+          },
+          "stock": {
+            "N": "15"
+          },
+          "isbn": {
+            "S": "978-1-2209-2659-2"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-034.svg"
+          },
+          "description": {
+            "S": "A year of dusks, one poem each, from a window that never changes."
+          },
+          "searchText": {
+            "S": "the blue hour almanac beatriz oliveira 978-1-2209-2659-2"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-035"
+          },
+          "title": {
+            "S": "Cargo"
+          },
+          "author": {
+            "S": "Tunde Falade"
+          },
+          "category": {
+            "S": "Poetry"
+          },
+          "price": {
+            "N": "19"
+          },
+          "stock": {
+            "N": "12"
+          },
+          "isbn": {
+            "S": "978-1-7745-7479-9"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-035.svg"
+          },
+          "description": {
+            "S": "Poems about what ships carry and what they leave behind on both shores."
+          },
+          "searchText": {
+            "S": "cargo tunde falade 978-1-7745-7479-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-036"
+          },
+          "title": {
+            "S": "The Weight Room"
+          },
+          "author": {
+            "S": "Tunde Falade"
+          },
+          "category": {
+            "S": "Poetry"
+          },
+          "price": {
+            "N": "20.5"
+          },
+          "stock": {
+            "N": "7"
+          },
+          "isbn": {
+            "S": "978-1-0598-6011-1"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-036.svg"
+          },
+          "description": {
+            "S": "Falade turns the vocabulary of strength training into a language for grief."
+          },
+          "searchText": {
+            "S": "the weight room tunde falade 978-1-0598-6011-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-037"
+          },
+          "title": {
+            "S": "Hymnal for Empty Rooms"
+          },
+          "author": {
+            "S": "Saoirse Whelan"
+          },
+          "category": {
+            "S": "Poetry"
+          },
+          "price": {
+            "N": "17"
+          },
+          "stock": {
+            "N": "19"
+          },
+          "isbn": {
+            "S": "978-1-7207-3815-2"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-037.svg"
+          },
+          "description": {
+            "S": "Sparse, liturgical poems written after the closing of a rural parish."
+          },
+          "searchText": {
+            "S": "hymnal for empty rooms saoirse whelan 978-1-7207-3815-2"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-038"
+          },
+          "title": {
+            "S": "The Weight of Maps"
+          },
+          "author": {
+            "S": "Tomas Bergqvist"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "39.95"
+          },
+          "stock": {
+            "N": "5"
+          },
+          "isbn": {
+            "S": "978-1-1055-1620-7"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-038.svg"
+          },
+          "description": {
+            "S": "How cartographers shaped empires by choosing what to leave out. A history of omission in eleven maps."
+          },
+          "searchText": {
+            "S": "the weight of maps tomas bergqvist 978-1-1055-1620-7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-039"
+          },
+          "title": {
+            "S": "The Merchant’s Clock"
+          },
+          "author": {
+            "S": "Tomas Bergqvist"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "42"
+          },
+          "stock": {
+            "N": "8"
+          },
+          "isbn": {
+            "S": "978-1-3187-4019-2"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-039.svg"
+          },
+          "description": {
+            "S": "Standard time was not discovered; it was sold. A history of who benefited from the hour."
+          },
+          "searchText": {
+            "S": "the merchant’s clock tomas bergqvist 978-1-3187-4019-2"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-040"
+          },
+          "title": {
+            "S": "The Long Field"
+          },
+          "author": {
+            "S": "Ruth Ó Cadhla"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "32"
+          },
+          "stock": {
+            "N": "8"
+          },
+          "isbn": {
+            "S": "978-1-4450-9981-1"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-040.svg"
+          },
+          "description": {
+            "S": "Four hundred years of a single Irish field, told through the people who worked it."
+          },
+          "searchText": {
+            "S": "the long field ruth ó cadhla 978-1-4450-9981-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-041"
+          },
+          "title": {
+            "S": "Common Ground"
+          },
+          "author": {
+            "S": "Ruth Ó Cadhla"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "36.5"
+          },
+          "stock": {
+            "N": "6"
+          },
+          "isbn": {
+            "S": "978-1-5150-6232-5"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-041.svg"
+          },
+          "description": {
+            "S": "Enclosure, commons, and the long argument about who is allowed to stand where."
+          },
+          "searchText": {
+            "S": "common ground ruth ó cadhla 978-1-5150-6232-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-042"
+          },
+          "title": {
+            "S": "Saltpetre"
+          },
+          "author": {
+            "S": "Hugh Marchetti"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "38"
+          },
+          "stock": {
+            "N": "11"
+          },
+          "isbn": {
+            "S": "978-1-5586-8969-5"
+          },
+          "publishedYear": {
+            "N": "2019"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-042.svg"
+          },
+          "description": {
+            "S": "A global history of gunpowder’s least glamorous ingredient and the empires built on it."
+          },
+          "searchText": {
+            "S": "saltpetre hugh marchetti 978-1-5586-8969-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-043"
+          },
+          "title": {
+            "S": "The Coffee Ledger"
+          },
+          "author": {
+            "S": "Hugh Marchetti"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "34.95"
+          },
+          "stock": {
+            "N": "14"
+          },
+          "isbn": {
+            "S": "978-1-1396-0287-7"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-043.svg"
+          },
+          "description": {
+            "S": "Trade, credit, and caffeine: how one commodity rewired European finance."
+          },
+          "searchText": {
+            "S": "the coffee ledger hugh marchetti 978-1-1396-0287-7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-044"
+          },
+          "title": {
+            "S": "Cities Under Cities"
+          },
+          "author": {
+            "S": "Anais Perrot"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "45"
+          },
+          "stock": {
+            "N": "4"
+          },
+          "isbn": {
+            "S": "978-1-5577-0671-3"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-044.svg"
+          },
+          "description": {
+            "S": "What lies beneath eight cities, and what each chose to build over."
+          },
+          "searchText": {
+            "S": "cities under cities anais perrot 978-1-5577-0671-3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-045"
+          },
+          "title": {
+            "S": "The Cartulary"
+          },
+          "author": {
+            "S": "Anais Perrot"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "41.5"
+          },
+          "stock": {
+            "N": "7"
+          },
+          "isbn": {
+            "S": "978-1-4072-0153-5"
+          },
+          "publishedYear": {
+            "N": "2018"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-045.svg"
+          },
+          "description": {
+            "S": "A single monastery’s property records, read as a thousand-year social history."
+          },
+          "searchText": {
+            "S": "the cartulary anais perrot 978-1-4072-0153-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-046"
+          },
+          "title": {
+            "S": "Plague Roads"
+          },
+          "author": {
+            "S": "Sunil Mehta"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "37"
+          },
+          "stock": {
+            "N": "12"
+          },
+          "isbn": {
+            "S": "978-1-4098-6575-9"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-046.svg"
+          },
+          "description": {
+            "S": "The routes disease travelled were the routes trade had already built."
+          },
+          "searchText": {
+            "S": "plague roads sunil mehta 978-1-4098-6575-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-047"
+          },
+          "title": {
+            "S": "The Signal Corps"
+          },
+          "author": {
+            "S": "Sunil Mehta"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "39.5"
+          },
+          "stock": {
+            "N": "9"
+          },
+          "isbn": {
+            "S": "978-1-2237-5343-0"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-047.svg"
+          },
+          "description": {
+            "S": "Semaphore, telegraph, radio: how command outran the speed of a horse."
+          },
+          "searchText": {
+            "S": "the signal corps sunil mehta 978-1-2237-5343-0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-048"
+          },
+          "title": {
+            "S": "Empire of Wool"
+          },
+          "author": {
+            "S": "Greta Lindqvist"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "33"
+          },
+          "stock": {
+            "N": "16"
+          },
+          "isbn": {
+            "S": "978-1-1596-2944-1"
+          },
+          "publishedYear": {
+            "N": "2017"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-048.svg"
+          },
+          "description": {
+            "S": "Sheep, cloth, and the making of the North Atlantic economy."
+          },
+          "searchText": {
+            "S": "empire of wool greta lindqvist 978-1-1596-2944-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-049"
+          },
+          "title": {
+            "S": "The Last Ferry"
+          },
+          "author": {
+            "S": "Greta Lindqvist"
+          },
+          "category": {
+            "S": "History"
+          },
+          "price": {
+            "N": "35.5"
+          },
+          "stock": {
+            "N": "10"
+          },
+          "isbn": {
+            "S": "978-1-5770-8847-9"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-049.svg"
+          },
+          "description": {
+            "S": "Island communities and the infrastructure decisions that quietly ended them."
+          },
+          "searchText": {
+            "S": "the last ferry greta lindqvist 978-1-5770-8847-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-050"
+          },
+          "title": {
+            "S": "Understorey"
+          },
+          "author": {
+            "S": "Fern Whitlock"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "34.95"
+          },
+          "stock": {
+            "N": "14"
+          },
+          "isbn": {
+            "S": "978-1-2938-1561-8"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-050.svg"
+          },
+          "description": {
+            "S": "Six years beneath a temperate rainforest canopy, and what the soil knows that we do not."
+          },
+          "searchText": {
+            "S": "understorey fern whitlock 978-1-2938-1561-8"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "TableName": "Paperbound-Carts",
+  "AttributeDefinitions": [
+    { "AttributeName": "userId", "AttributeType": "S" },
+    { "AttributeName": "productId", "AttributeType": "S" }
+  ],
+  "KeySchema": [
+    { "AttributeName": "userId", "KeyType": "HASH" },
+    { "AttributeName": "productId", "KeyType": "RANGE" }
+  ],
+  "BillingMode": "PROVISIONED",
+  "ProvisionedThroughput": { "ReadCapacityUnits": 5, "WriteCapacityUnits": 5 },
+  "Tags": [
+    { "Key": "Project", "Value": "INFS803-Assignment2" },
+    { "Key": "Layer", "Value": "database" }
+  ]
+}
