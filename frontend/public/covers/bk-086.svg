@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600" role="img" aria-label="The Grid and the Gutter by Johannes Weiss">
+  <rect width="400" height="600" fill="#4A2E52"/>
+  <rect x="0" y="0" width="10" height="600" fill="#000" opacity="0.22"/>
+  <rect x="26" y="26" width="348" height="548" fill="none" stroke="#C9A15A" stroke-width="1.5"/>
+  <rect x="34" y="34" width="332" height="532" fill="none" stroke="#C9A15A" stroke-width="0.5" opacity="0.6"/>
+  <text font-family="Georgia,'Times New Roman',serif" font-size="40" fill="#F1E7F3" text-anchor="middle" letter-spacing="1"><tspan x="200" y="255">THE GRID AND</tspan><tspan x="200" y="303">THE GUTTER</tspan></text>
+  <line x1="166" y1="512" x2="234" y2="512" stroke="#C9A15A" stroke-width="1"/>
+  <text x="200" y="540" font-family="'Helvetica Neue',Arial,sans-serif" font-size="15" fill="#C9A15A" text-anchor="middle" letter-spacing="3.5">WEISS</text>
+</svg>
