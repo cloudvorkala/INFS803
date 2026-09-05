@@ -1,0 +1,27 @@
+# AWS Amplify Hosting build spec.
+# Place this at the repo root. If the React app lives in a subfolder of the repo,
+# set the app's "Base directory" in the Amplify console rather than editing paths here.
+#
+# IMPORTANT: VITE_* variables are read at BUILD time, not run time. Set them in the
+# Amplify console under App settings -> Environment variables BEFORE the build runs,
+# or the bundle ships with empty values and the app silently falls back to its mock API.
+#
+# Also add a rewrite rule (App settings -> Rewrites and redirects):
+#   Source: /<*>   Target: /index.html   Type: 404 (Rewrite)
+# Without it, refreshing on /orders returns a 404 instead of the app.
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: dist
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
