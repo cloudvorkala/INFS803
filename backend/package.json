@@ -1,0 +1,7 @@
+{
+  "name": "paperbound-backend",
+  "private": true,
+  "devDependencies": {
+    "serverless": "^4.22.0"
+  }
+}

@@ -1,0 +1,54 @@
+service: paperbound-backend
+frameworkVersion: '4'
+
+provider:
+  name: aws
+  runtime: python3.12
+  region: ${env:AWS_REGION, 'ap-southeast-2'}
+  stage: ${env:STAGE, 'dev'}
+  architecture: x86_64
+  timeout: 15
+  memorySize: 256
+  logRetentionInDays: 14
+  environment:
+    COGNITO_USER_POOL_ID: ${env:COGNITO_USER_POOL_ID}
+    COGNITO_APP_CLIENT_ID: ${env:COGNITO_APP_CLIENT_ID}
+    PRODUCTS_TABLE: ${env:PRODUCTS_TABLE}
+    CARTS_TABLE: ${env:CARTS_TABLE}
+    ORDERS_TABLE: ${env:ORDERS_TABLE}
+    UPLOADS_BUCKET: ${env:UPLOADS_BUCKET}
+    ALLOWED_ORIGINS: ${env:ALLOWED_ORIGINS, ''}
+    JWKS_CACHE_SECONDS: ${env:JWKS_CACHE_SECONDS, '300'}
+    JWKS_TIMEOUT_SECONDS: ${env:JWKS_TIMEOUT_SECONDS, '3'}
+  # Foundation only: no application DynamoDB, S3, or Cognito IAM grants yet.
+
+functions:
+  api:
+    handler: lambda_handler.handler
+    events:
+      - http:
+          path: /
+          method: any
+      - http:
+          path: /{proxy+}
+          method: any
+
+# Framework v4 includes Python requirements packaging. The WSGI adapter is a
+# Python dependency called by lambda_handler.py, so no WSGI npm plugin is needed.
+custom:
+  pythonRequirements:
+    dockerizePip: true
+
+package:
+  patterns:
+    - '!tests/**'
+    - '!.venv/**'
+    - '!**/__pycache__/**'
+    - '!.pytest_cache/**'
+    - '!.env*'
+    - '!node_modules/**'
+    - '!requirements-dev.txt'
+    - '!pytest.ini'
+    - '!README.md'
+
+# Existing tables, bucket, and pool are referenced above, never created here.
