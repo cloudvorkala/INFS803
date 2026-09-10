@@ -1,7 +1,6 @@
 """One error envelope for application, validation and HTTP errors."""
 
 from flask import current_app, jsonify
-from pydantic import ValidationError
 from werkzeug.exceptions import HTTPException
 
 
@@ -17,12 +16,6 @@ def register_error_handlers(app):
     def application_error(error):
         return jsonify(message=error.message), error.status
 
-    @app.errorhandler(ValidationError)
-    def validation_error(error):
-        # Do not echo input values (tokens and uploaded data can be sensitive).
-        fields = sorted({".".join(map(str, item["loc"])) or "body" for item in error.errors()})
-        return jsonify(message=f"Invalid request field(s): {', '.join(fields)}."), 400
-
     @app.errorhandler(HTTPException)
     def http_error(error):
         response = error.get_response()
@@ -32,5 +25,7 @@ def register_error_handlers(app):
 
     @app.errorhandler(Exception)
     def unexpected_error(error):
+        # Includes internal/domain/response ValidationErrors. Only client-body
+        # validation in parse_json_request() is explicitly translated to 400.
         current_app.logger.exception("Unhandled backend error")
         return jsonify(message="An unexpected backend error occurred."), 500

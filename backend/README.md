@@ -34,10 +34,33 @@ origins. The final asset-delivery URL setting is deferred until infrastructure i
 `models/` follows `../docs/api-contract.md`. Product updates use `changes()` or
 `model_dump(exclude_unset=True)` so omitted fields remain unchanged; only coverUrl
 accepts explicit null. Monetary values remain Decimal internally and serialize
-as JSON numbers. Request models reject unknown fields, including ownership IDs.
+as JSON numbers through the HTTP response helper below. Request models reject
+unknown fields, including ownership IDs.
 Cart add quantities are positive integers (default 1); cart update quantities are
 non-negative integers. The 40-line checkout limit is declared for later domain code;
 it is not enforced on cart reads or historical order lists.
+
+### HTTP boundaries for future routes
+
+Use `parse_json_request(RequestModel)` from `http_helpers.py` for client JSON.
+It converts Pydantic failures only at this request-validation boundary into
+400 `{ "message": "..." }` responses, without echoing input values. Malformed
+JSON retains Flask's 400 handling; unsupported content types retain its 415
+handling. Construct domain/response models separately: their ValidationErrors
+are server-side failures and receive the safe 500 envelope.
+
+Return `api_response(response_model, status=200)` (or the contract's 201 status).
+The helper requires a Contract instance and always calls
+`model_dump(mode="json")`, preserving field-specific serializers for nested
+money and dates. Map repository data into the appropriate API response model
+before calling it. Raw dictionaries are not accepted by the helper.
+
+Do not use `jsonify(model)` or `jsonify(model.model_dump())`. The JSON provider
+rejects implicit Pydantic model and Decimal conversion rather than silently
+returning monetary strings. Plain JSON error envelopes continue to work.
+The existing foundation test that calls `jsonify(ProductCreate(...))` and relies
+on global validation-to-400 handling reflects the old boundary; it has not been
+updated as part of this task's no-test-change scope.
 
 Use `@require_auth` or `@require_admin` on future routes and
 `authenticated_user_id()` for ownership. These helpers accept only the documented
@@ -59,8 +82,13 @@ API proxy events for ANY / and ANY /{proxy+}. `lambda_handler.py` calls the Pyth
 authentication and routing. No tables, buckets, or pools are declared and no
 application data-access IAM permissions are granted in this step.
 
-Serverless Framework v4 provides built-in Python requirements packaging; Docker
-packaging is selected for Linux-compatible cryptography and Pydantic dependencies.
+`package.json` declares Serverless `^4.22.0` (minimum 4.22.0, below 5), meeting
+the minimum for the built-in Python requirements integration. No project-local
+Serverless installation or lockfile was present when this configuration was
+reviewed, so the installed version and actual packaging remain unverified.
+`dockerizePip: non-linux` uses Docker on Windows/macOS and native packaging on
+Linux. Linux packaging must still use Python 3.12 and dependencies compatible
+with the configured Lambda x86_64 runtime; Linux alone does not guarantee that.
 No additional Serverless plugin is necessary. A future packaging/deployment check
 requires the Node dependency, Docker, and any Framework authentication requirements.
 Do not deploy or inspect AWS without separate authorization. Reference:

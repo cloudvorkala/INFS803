@@ -37,7 +37,7 @@ functions:
 # Python dependency called by lambda_handler.py, so no WSGI npm plugin is needed.
 custom:
   pythonRequirements:
-    dockerizePip: true
+    dockerizePip: non-linux
 
 package:
   patterns:

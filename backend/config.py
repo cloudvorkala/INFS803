@@ -35,6 +35,14 @@ class Settings(BaseModel):
     def validate_origins(cls, origins):
         for origin in origins:
             parsed = urlsplit(origin)
+            # urlsplit() alone permits non-numeric/out-of-range ports. Accessing
+            # .port validates them; an explicit empty port also is not an origin.
+            try:
+                parsed.port
+            except ValueError as error:
+                raise ValueError("CORS origins must use a valid numeric port.") from error
+            if parsed.netloc.endswith(":"):
+                raise ValueError("CORS origins must not contain an empty port.")
             if (parsed.scheme not in {"http", "https"} or not parsed.hostname
                     or parsed.username or parsed.password or parsed.path
                     or parsed.query or parsed.fragment or "*" in origin):
