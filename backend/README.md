@@ -18,13 +18,17 @@ py -3.12 -m venv .venv
 The tests generate RSA keys locally and replace JWKS HTTP transport. Network
 access is blocked by an autouse fixture; no AWS credentials or resources are used.
 
-Set the environment variables listed in `.env.example` in the process, then run:
+Fill in `backend/.env` using `.env.example` as a reference, then run:
 
 ```powershell
 .\.venv\Scripts\python.exe -m flask --app app:create_app run
 ```
 
-The application does not automatically load `.env`. Missing/invalid required
+`Settings.from_env()` loads `.env` beside `config.py` using python-dotenv,
+regardless of the current working directory. Existing process environment
+variables take precedence; the file supplies only missing values. An explicit
+`Settings.from_env(environ=...)` mapping bypasses dotenv for isolated callers.
+The file remains excluded from Git and deployment packaging. Missing/invalid required
 configuration fails at application creation; existing resource names are required
 but are never looked up during startup. Empty ALLOWED_ORIGINS permits no browser
 origins. The final asset-delivery URL setting is deferred until infrastructure is verified.

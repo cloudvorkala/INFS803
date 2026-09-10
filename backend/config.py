@@ -1,9 +1,11 @@
-"""Environment-only configuration; loading never contacts AWS."""
+"""Environment configuration with a backend-local .env fallback; no AWS access."""
 
 import os
+from pathlib import Path
 from typing import Annotated
 from urllib.parse import urlsplit
 
+from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator, model_validator
 
 RequiredText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
@@ -55,6 +57,10 @@ class Settings(BaseModel):
 
     @classmethod
     def from_env(cls, environ=None):
+        if environ is None:
+            # Anchor to this file rather than the shell's current directory.
+            # Explicit environment mappings stay isolated from the local .env.
+            load_dotenv(Path(__file__).resolve().parent / ".env", override=False, encoding="utf-8-sig")
         env = os.environ if environ is None else environ
         mapping = {
             "aws_region": "AWS_REGION",
