@@ -1,7 +1,18 @@
 # Backend Cloud Architecture
 
+## Implementation Status (2026-09-11)
+
+This document defines the intended architecture. The repository currently
+implements the Flask application foundation, Lambda WSGI adapter, configuration,
+Cognito verification helpers, Pydantic models, and HTTP/CORS handling. Business
+routes, DynamoDB repositories, checkout logic, and S3 writes are still pending.
+The diagram and persistence rules below describe the target, not verified live
+AWS resources. See [current-status.md](current-status.md) for implementation and
+test evidence.
+
 ## High-Level Architecture
 
+```text
 Client
   |
   | HTTPS / REST
@@ -28,6 +39,25 @@ Client -> API Gateway proxy -> Lambda / serverless-wsgi
        -> Flask Cognito decorator -> verified claims -> application logic
 
 Header: Authorization: Bearer <Cognito ID token>
+```
+
+## Current Code Layout
+
+| Location | Responsibility |
+| --- | --- |
+| `backend/app.py` | Application factory, explicit JSON provider, CORS, OPTIONS handling, and request-body limit; no resource routes yet. |
+| `backend/lambda_handler.py` | Caches one Flask application per warm execution environment and calls `serverless_wsgi.handle_request`. |
+| `backend/config.py` | Validates environment settings and loads the backend-local `.env` as a fallback; performs no AWS resource lookup. |
+| `backend/auth/` | Cognito JWT verification, authenticated request context, and admin/user helpers. |
+| `backend/models/` | Pydantic request/response contracts, validation, and JSON serializers. |
+| `backend/http_helpers.py` / `backend/errors.py` | Explicit HTTP validation/serialization boundaries and JSON error responses. |
+| `backend/serverless.yml` | Initial Lambda and REST API proxy configuration referencing existing resource names. |
+| `backend/tests/` | Offline foundation tests; current results and known failure are recorded in `current-status.md`. |
+
+Future API/routes, services/repositories, and core/domain modules must preserve
+the separation below. Those business layers do not exist yet. Response models
+are returned through `api_response()`; only client-body validation through
+`parse_json_request()` is translated to 400. Internal model failures remain 500.
 
 ## AWS Services
 
@@ -114,6 +144,18 @@ configured S3 covers/ prefix. AWS configuration comes from environment variables
 
 Infrastructure and backend deployment are managed using Serverless Framework
 and `serverless.yml`.
+
+The current configuration declares one Python 3.12 / x86_64 Lambda, a 15-second
+timeout, 256 MiB memory, 14-day log retention, and a default `dev` stage. It
+defines the two REST proxy events without a Gateway authorizer. The Python
+`serverless-wsgi` dependency is called directly by the Lambda handler.
+`package.json` declares Serverless `^4.22.0`, and `pythonRequirements` configures
+`dockerizePip: non-linux`. Packaging has not been verified in this review.
+
+No DynamoDB tables, S3 buckets, or Cognito pools are declared for creation in the
+current configuration. Application DynamoDB/S3 IAM grants are also absent and
+must be added with the corresponding services. Local `.env` files, tests, and
+development artifacts are excluded by deployment packaging patterns.
 
 Initially reference existing DynamoDB, S3, and Cognito resources through
 configuration. Do not create replacements until actual AWS state has been

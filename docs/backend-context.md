@@ -18,9 +18,26 @@ The system consists of three tiers:
    - DynamoDB for persistent application data.
    - S3 for uploaded product images/files.
 
+These tiers describe the intended system. As of 2026-09-11, the backend has a
+Flask/Lambda foundation, configuration loading, Cognito verification helpers,
+Pydantic contracts, and HTTP/CORS handling. Resource endpoints, cloud persistence,
+checkout, and S3 uploads are not implemented yet. The 12 operations (including
+4 POST operations) in the API contract are planned interfaces, not currently
+functional APIs.
+
+## Working References
+
+- [current-status.md](current-status.md): implemented capabilities, test results,
+  known issues, and remaining work.
+- [architecture.md](architecture.md): intended AWS architecture and current code layout.
+- [api-contract.md](api-contract.md): authoritative frontend/backend interface.
+- [backend README](../backend/README.md): local setup and HTTP/auth helper usage.
+- [environment example](../backend/.env.example): configuration names and placeholders.
+  Local `.env` contents are not shared project documentation or proof of AWS state.
+
 ## Backend Responsibilities
 
-The backend is responsible for:
+The backend's target responsibilities are:
 
 - Product retrieval and filtering.
 - Product administration.

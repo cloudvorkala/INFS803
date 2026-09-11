@@ -6,6 +6,19 @@ documents. Observed frontend response conventions are preserved below.
 
 Do not change it without coordination.
 
+## Implementation Status (2026-09-11)
+
+The definitions below remain the agreed target contract. Request/response models,
+Cognito authentication helpers, and HTTP helpers exist in the backend, but none
+of the 12 business operations (including 4 POST operations) has a registered
+Flask route yet. Resource requests currently return JSON 404 responses; CORS
+OPTIONS requests return 204. Those foundation responses do not replace the
+success codes or authentication requirements specified below.
+
+See [current-status.md](current-status.md) for implemented validation boundaries,
+test results, and remaining work. This status update does not change API paths,
+methods, fields, response shapes, or agreed status codes.
+
 ## Authentication and Authorization
 
 The frontend authenticates directly with Cognito. Protected requests use exactly:
