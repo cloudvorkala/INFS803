@@ -1,4 +1,4 @@
-"""Application factory. Future routes use the boundaries in http_helpers.py."""
+"""Application factory with public product routes and shared HTTP boundaries."""
 
 from flask import Flask, request
 
@@ -6,6 +6,8 @@ from auth.cognito import CognitoVerifier
 from config import Settings
 from errors import register_error_handlers
 from http_helpers import ExplicitJSONProvider
+from repositories.products import ProductRepository
+from routes.products import products_blueprint
 
 
 def create_app(settings: Settings | None = None) -> Flask:
@@ -15,7 +17,9 @@ def create_app(settings: Settings | None = None) -> Flask:
     app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # Room for a 3 MiB base64 image plus JSON.
     app.extensions["settings"] = settings
     app.extensions["cognito_verifier"] = CognitoVerifier(settings)
+    app.extensions["product_repository"] = ProductRepository(settings)
     register_error_handlers(app)
+    app.register_blueprint(products_blueprint)
 
     @app.before_request
     def preflight():

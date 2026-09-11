@@ -1,9 +1,63 @@
-# Paperbound backend foundation
+# Paperbound backend
 
-This step supplies Flask scaffolding, configuration, Cognito authentication,
-Pydantic contracts, JSON errors, CORS, tests, and initial Serverless configuration.
-Resource endpoints, database operations, checkout logic, and S3 writes are not
-implemented. Requests to resource paths currently return JSON 404 responses.
+The backend supplies Flask scaffolding, configuration, Cognito authentication,
+Pydantic contracts, JSON errors, CORS, and initial Serverless configuration.
+Public `GET /products` and `GET /products/:id` routes read the configured existing
+DynamoDB product table. Product writes, cart/order endpoints, checkout logic,
+and S3 writes are not implemented.
+
+## Product reads
+
+`routes/products.py` handles HTTP queries, response envelopes, and missing-product
+404s. `repositories/products.py` owns SDK access, filtering, and explicit mapping
+into the existing `Product` response model. `app.py` registers the blueprint and
+repository. Creating the app does not create an SDK session or contact DynamoDB.
+
+- `GET /products` returns 200 `{ "count": number, "products": Product[] }`.
+  Optional `category` matches the complete category without case sensitivity;
+  optional `search` matches a substring of title, author, or ISBN without case
+  sensitivity. Both filters must match when supplied together. Query values are
+  trimmed, and empty values mean no filter. Repeated `category` or `search`
+  parameters return 400; unrelated query parameters are ignored.
+- The repository scans every page of `PRODUCTS_TABLE`, using each
+  `LastEvaluatedKey` as the next `ExclusiveStartKey`. All matching products are
+  returned, including an empty array/count 0 when nothing matches. There are no
+  API pagination fields or new indexes. Scan order is not a guaranteed sort order;
+  the frontend continues to sort and paginate the complete result locally.
+- `GET /products/:id` uses `GetItem` with the string partition key `id`.
+  Found items return 200 with the Product object directly. An absent item returns
+  404 `{ "message": "Product not found." }`. Both reads use the SDK's default
+  eventual consistency.
+- Both routes are public and do not invoke Cognito verification, including when
+  a caller happens to send an Authorization header. Existing CORS rules apply.
+- Mapping selects only the ten documented Product fields, excluding `searchText`
+  and other storage attributes. All ten stored fields are required; creation
+  defaults are not used to mask incomplete stored records. Integral, finite
+  DynamoDB `Decimal` stock/year values convert to `int` without truncation, then
+  pass the existing model's range validation. Price remains validated `Decimal`
+  internally and is serialized as a JSON number by `api_response()`.
+- Invalid stored data and DynamoDB/backend exceptions reach the existing safe
+  500 `{ "message": "An unexpected backend error occurred." }` handler. A missing
+  table or denied AWS permission is a backend failure, not a product 404.
+
+The table name and region come from `Settings` (`PRODUCTS_TABLE=Paperbound-Products`
+and the configured `AWS_REGION`). The repository uses the default AWS credential
+chain; Lambda must use its execution role. It never creates a table or index.
+The current Serverless configuration still has no application data-access IAM
+grants. Actual reads require `dynamodb:Scan` and `dynamodb:GetItem` on the existing
+product table; any IAM/infrastructure change or deployment needs separate authorization.
+
+The frontend's `listProducts()` / `getProduct()` bindings already use these paths
+and response shapes. Its query builder omits the `All` category sentinel; the
+backend does not reserve a category name. Prices support the frontend's
+`toFixed(2)` usage, and searching by author supports detail-page related books.
+Real frontend integration still needs the correct API base URL and allowed CORS
+origin. Frontend files are unchanged.
+
+This feature was limited to syntax/import, route-registration, and static/config
+validation; no new test suite or live AWS verification is included. Existing
+foundation tests that expect `/products` to be unregistered now need updating
+before they can validate the business implementation.
 
 ## Local setup
 
