@@ -1,10 +1,11 @@
-"""Public product reads; persistence and record mapping live in the repository."""
+"""Public product reads and admin writes using the shared HTTP boundaries."""
 
 from flask import Blueprint, current_app, request
 
+from auth.decorators import require_admin
 from errors import ApiError
-from http_helpers import api_response
-from models.products import ProductListResponse
+from http_helpers import api_response, parse_json_request
+from models.products import ProductCreate, ProductDeleteResponse, ProductListResponse, ProductUpdate
 
 products_blueprint = Blueprint("products", __name__)
 
@@ -34,3 +35,26 @@ def get_product(product_id: str):
     if product is None:
         raise ApiError(404, "Product not found.")
     return api_response(product)
+
+
+@products_blueprint.post("/products")
+@require_admin
+def create_product():
+    payload = parse_json_request(ProductCreate)
+    product = current_app.extensions["product_repository"].create_product(payload)
+    return api_response(product, status=201)
+
+
+@products_blueprint.put("/products/<string:product_id>")
+@require_admin
+def update_product(product_id: str):
+    payload = parse_json_request(ProductUpdate)
+    product = current_app.extensions["product_repository"].update_product(product_id, payload)
+    return api_response(product)
+
+
+@products_blueprint.delete("/products/<string:product_id>")
+@require_admin
+def delete_product(product_id: str):
+    current_app.extensions["product_repository"].delete_product(product_id)
+    return api_response(ProductDeleteResponse(deleted=product_id))

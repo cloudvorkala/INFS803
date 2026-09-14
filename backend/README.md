@@ -3,8 +3,9 @@
 The backend supplies Flask scaffolding, configuration, Cognito authentication,
 Pydantic contracts, JSON errors, CORS, and initial Serverless configuration.
 Public `GET /products` and `GET /products/:id` routes read the configured existing
-DynamoDB product table. Product writes, cart/order endpoints, checkout logic,
-and S3 writes are not implemented.
+DynamoDB product table. Admin-only `POST /products`, `PUT /products/:id`, and
+`DELETE /products/:id` persist product changes in the same table. Cart/order
+endpoints, checkout logic, and S3 writes are not implemented.
 
 ## Product reads
 
@@ -58,6 +59,49 @@ This feature was limited to syntax/import, route-registration, and static/config
 validation; no new test suite or live AWS verification is included. Existing
 foundation tests that expect `/products` to be unregistered now need updating
 before they can validate the business implementation.
+
+## Admin product writes
+
+All three write routes use the existing `require_admin` decorator. Requests must
+send `Authorization: Bearer <Cognito ID token>` with exact `admins` membership
+in verified `cognito:groups`. Missing/invalid authentication returns 401 and
+authenticated non-admin users receive 403, before request-body parsing or DynamoDB
+access. Client identity headers or payload fields do not grant permissions.
+
+- `POST /products` validates through `parse_json_request(ProductCreate)`, applies
+  the documented defaults, and generates a `bk-` ID using a full UUID4 hex value.
+  A conditional `PutItem` prevents replacing an existing ID; a collision returns
+  409. Success returns 201 with the Product response.
+- `PUT /products/:id` uses `ProductUpdate.changes()`. After a strongly consistent
+  read and stored-data validation, `UpdateItem` sets only supplied fields and,
+  when title/author/ISBN are supplied, recomputes `searchText`. Omitted fields and
+  other storage attributes remain unchanged. An empty object returns the existing
+  Product without writing. Success returns 200 with the mapped `ALL_NEW` record.
+- Update conditions require the record to exist and the raw old values of fields
+  being replaced to match. When rebuilding `searchText`, all three source fields
+  are also checked. Concurrent changes to those fields return 409; a product
+  deleted before the write returns 404. `ALL_OLD` on a failed condition is used
+  only to distinguish those cases and is never returned to the caller.
+- These conditions protect the repository's read/write window. They cannot detect
+  stale values in an admin form loaded before this request; the contract has no
+  client version field. The frontend currently submits the whole edit form.
+- `DELETE /products/:id` conditionally deletes only an existing product and
+  returns 200 `{ "deleted": "<product-id>" }`. It does not read or scan carts.
+  Missing products on PUT/DELETE return 404 `{ "message": "Product not found." }`.
+
+Writes use Python-mode model dumps so money remains `Decimal` for DynamoDB.
+`searchText` joins title, author, and ISBN with case folding and outer whitespace
+trimming; the existing GET search continues to search those fields directly.
+Responses retain only the ten Product fields and use `api_response()` for numeric
+JSON serialization. Request models reject `id`, identity fields, and other unknown
+fields. Expected request-validation errors use 400; unexpected SDK/internal
+failures use the existing safe 500 envelope.
+
+In addition to read permissions, the execution role needs `dynamodb:PutItem`,
+`dynamodb:UpdateItem`, and `dynamodb:DeleteItem` on the configured product table.
+No IAM configuration or live resources were changed. The frontend still sends
+raw JWTs and must adopt the agreed Bearer header before its admin calls will work.
+See `../docs/current-status.md` for the latest validation and manual verification work.
 
 ## Local setup
 
@@ -154,4 +198,5 @@ https://www.serverless.com/framework/docs/providers/aws/guide/python
 
 Frontend integration still requires its owner to adopt the Bearer header. The
 frontend currently restricts uploads to 2 MiB and offers more MIME types than the
-backend allows. Neither frontend files nor shared project docs are modified here.
+backend allows. Frontend files are unchanged; `docs/current-status.md` records
+the implemented product operations and remaining manual integration work.

@@ -1,28 +1,30 @@
 # Current Backend Status
 
-Last reviewed: 2026-09-11, against the local backend source and checks below.
+Last reviewed: 2026-09-14, against the local backend source and checks below.
 This records repository implementation status; live AWS state has not been
 verified as part of this review.
 
 ## Implementation Summary
 
-The backend foundation is implemented. Business REST endpoints and cloud data
-access are not implemented yet. `create_app()` registers no resource routes;
-all 12 contracted operations currently return JSON 404 responses. CORS OPTIONS
-requests return 204, which is not a functional business API operation.
+The backend foundation and all five product CRUD operations are implemented in
+the repository. Product reads are public; product writes require a verified
+Cognito ID token and exact `admins` group membership. Cart, checkout, orders,
+and upload operations remain unimplemented. CORS OPTIONS requests return 204,
+which is not a functional business API operation.
 
-The contract defines 12 operations, including 4 POST operations. The current
-backend therefore does not yet meet the assignment's requirement for at least
-10 functional REST operations and at least 3 functional POST operations.
+The contract defines 12 operations, including 4 POST operations. Five operations
+are implemented, including one POST; seven operations remain. The assignment's
+minimum of 10 functional operations and 3 POST operations is not yet met, and
+live operation of the implemented APIs still requires manual verification.
 
 | Area | Current code | Remaining work |
 | --- | --- | --- |
-| Flask / Lambda | Application factory, cached WSGI application, REST proxy adapter. | Register product, cart, checkout, order, and upload routes. |
+| Flask / Lambda | Application factory, cached WSGI application, REST proxy adapter, and five product routes. | Implement cart, checkout, order, and upload routes. |
 | Configuration | Pydantic settings, backend-local dotenv loading, required resource names, exact CORS origins. | Verify resource identifiers and configure deployment values. |
-| Authentication | Cognito verifier, `require_auth`, `require_admin`, and verified-user helper. | Apply helpers to business routes and verify against the real User Pool. |
-| API models | Product, cart, shipping address, checkout, order, and upload request/response contracts. | Map repository results into response models and implement business rules. |
-| HTTP handling | Explicit request validation / response serialization, JSON errors, CORS, 5 MiB request-body limit. | Use the helpers in routes and align the legacy application test. |
-| DynamoDB / checkout | Resource names in settings; `MAX_CHECKOUT_LINES = 40` declared. | Repositories, persistence, ownership-scoped queries, stock checks, and checkout transaction. |
+| Authentication | Cognito verifier and `require_admin` applied to POST/PUT/DELETE products. | Verify real tokens/groups; apply ownership helpers to future cart/order routes. |
+| API models | Product models wired into CRUD; cart, checkout, order, and upload contracts available. | Implement remaining operations using their models. |
+| HTTP handling | Product routes use explicit validation / serialization and JSON errors; CORS and body limit retained. | Align legacy application tests and integrate remaining routes. |
+| DynamoDB / checkout | Product repository with paginated reads, conditional writes, and explicit response mapping. | Real AWS verification, cart/order repositories, and checkout transaction; the 40-line limit is still only a constant. |
 | S3 uploads | MIME declaration, strict base64, non-empty decoded data, and 3 MiB size validation in the request model. | Actual image-content validation, S3 writes, object keys, and usable asset URLs. |
 | Deployment | Initial `serverless.yml` and Serverless dependency declaration. | Application data-access IAM, packaging validation, authorized deployment, and live API checks. |
 
@@ -42,6 +44,55 @@ backend therefore does not yet meet the assignment's requirement for at least
 - Serverless Framework.
 - Pydantic validation.
 - [API contract](api-contract.md) defines 12 REST API operations, including 4 POST operations.
+
+## Implemented Product Operations
+
+| Operation | Access | Success response |
+| --- | --- | --- |
+| `GET /products` | Public | 200 `{ "count": number, "products": Product[] }`. |
+| `GET /products/:id` | Public | 200 Product. |
+| `POST /products` | Cognito `admins` | 201 created Product. |
+| `PUT /products/:id` | Cognito `admins` | 200 updated Product. |
+| `DELETE /products/:id` | Cognito `admins` | 200 `{ "deleted": "<product-id>" }`. |
+
+- [routes/products.py](../backend/routes/products.py) handles HTTP concerns;
+  [repositories/products.py](../backend/repositories/products.py) owns DynamoDB
+  access and Product mapping. The existing GET functions remain unchanged.
+- `PRODUCTS_TABLE` selects the existing product table (configured convention:
+  `Paperbound-Products`, string partition key `id`). No new table or index is
+  introduced. Application startup does not create an SDK resource or contact AWS.
+- Lists scan every DynamoDB page using `LastEvaluatedKey` / `ExclusiveStartKey`
+  and return the complete matching set. Category equality and substring search
+  across title/author/ISBN are case-insensitive and combine with AND. Empty
+  filters are ignored; duplicate category/search parameters return 400. Sorting
+  and pagination remain frontend-side. GET reads retain eventual consistency.
+- Create uses `ProductCreate` defaults and a server-generated `bk-` plus full
+  UUID4 hex ID. `PutItem` requires that ID to be absent, preventing overwrite;
+  a collision returns 409. `id` and unknown/identity fields are rejected in
+  create/update request bodies.
+- Update uses `ProductUpdate.changes()` and a strongly consistent read. It sets
+  only supplied fields; omitted fields stay unchanged. Empty updates return the
+  existing Product without a write. When title, author, or ISBN is supplied,
+  storage-only `searchText` is recomputed from all three normalized fields.
+- Update conditions require existence and unchanged raw values for fields being
+  replaced, plus all three search fields when rebuilding `searchText`. Changes
+  to those values during the read/write window produce 409; unrelated concurrent
+  edits are preserved. The failed-write `ALL_OLD` snapshot distinguishes a
+  deleted record (404) from a conflict (409) and is never exposed to clients.
+  Successful updates map `ALL_NEW` into the Product response.
+- These conditions do not detect a stale frontend form before the request
+  starts. There is no client version field, and the current admin form submits
+  all writable fields, including price and stock.
+- Delete conditionally removes only the product record and never scans carts.
+  Missing products on GET-detail/PUT/DELETE return 404
+  `{ "message": "Product not found." }`. Lazy cleanup of stale cart references
+  belongs to the future cart implementation.
+- Responses deliberately map only the ten documented Product fields, excluding
+  `searchText` and other storage attributes. Stock/year Decimal values are checked
+  for finite integers before conversion; price remains Decimal in Python-mode
+  writes and becomes a JSON number via `api_response()`. All stored response
+  fields are required; malformed stored data and unexpected SDK errors produce
+  the existing safe 500 envelope.
 
 ## Implemented Foundation
 
@@ -71,8 +122,10 @@ backend therefore does not yet meet the assignment's requirement for at least
 
 - Frontend authenticates directly with Cognito.
 - No custom `/login`, `/register`, `/logout` APIs are planned.
-- Backend authentication/authorization helpers are implemented, but no business
-  routes exist yet to apply them to protected/admin resources.
+- Product write routes use the existing `require_admin` decorator. Authentication
+  runs before body validation and DynamoDB access: missing/invalid tokens return
+  401; authenticated non-admin users return 403. Public GET routes have no auth
+  decorator. Client-supplied identity headers or fields cannot grant permissions.
 - Protected requests use `Authorization: Bearer <Cognito ID token>`.
 - Reusable Flask middleware/decorators verify Cognito JWTs using cached JWKS,
   including signature, expiration, issuer, token_use=id, and App Client audience.
@@ -91,7 +144,7 @@ backend therefore does not yet meet the assignment's requirement for at least
   Shipping address strings are trimmed and required; upload models validate the
   declared JPEG/PNG/WebP MIME type and decoded size, but do not inspect whether
   the decoded bytes form a real image.
-- Future routes must use `parse_json_request(RequestModel)` and
+- Product create/update routes use `parse_json_request(RequestModel)`; responses use
   `api_response(response_model, status=...)` from
   [http_helpers.py](../backend/http_helpers.py). Request-model validation becomes
   400 `{ "message": "..." }` without echoing input values. Domain/response model
@@ -108,9 +161,9 @@ backend therefore does not yet meet the assignment's requirement for at least
 
 ## Confirmed Business Rules Still Awaiting Implementation
 
-- Product CRUD, filtering, cart mutations, checkout, order history, and upload
-  must follow [api-contract.md](api-contract.md). Models alone do not implement
-  these operations or enforce resource ownership in persistence.
+- Cart mutations, checkout, order history, and upload must follow
+  [api-contract.md](api-contract.md). Models alone do not implement these
+  operations or enforce resource ownership in persistence.
 - Keep Paperbound-Products (id), Paperbound-Carts (userId/productId), and
   Paperbound-Orders (userId/placedAtOrderId), including existing product indexes.
 - Initially reference existing DynamoDB, S3, and Cognito resources through configuration.
@@ -120,51 +173,59 @@ backend therefore does not yet meet the assignment's requirement for at least
   calculation, order creation, and cart-line deletion are not implemented.
 - No cart revision fields or checkout idempotency keys in version one.
 - Deleted products must be omitted/lazily cleaned from carts; no scan of all user carts.
-- Catalogue search must return all matching products; pagination remains frontend-side.
 - Uploads must accept filename/dataUrl, allow JPEG/PNG/WebP up to 3 MiB decoded,
   upload to S3, and return { url, s3Key }; no presigned upload workflow.
 
 ## Validation Results
 
-Run on 2026-09-11 from `backend/`:
+Lightweight local validation on 2026-09-14, after implementing admin writes:
 
-```powershell
-.\.venv\Scripts\python.exe -m pytest
-```
-
-- Environment: Windows, Python 3.13.2, pytest 9.1.1.
-- Result: **136 passed, 1 failed** (137 collected).
-- Failure: `tests/test_app.py::test_foundation_errors_and_cors` expects 400 but
-  receives 500. Its temporary route calls `ProductCreate.model_validate()`
-  directly instead of `parse_json_request()`, so the error reaches the internal
-  exception handler. The same test still attempts direct `jsonify(model)`;
-  that assertion is not reached and also uses the old serialization boundary.
-  The test remains unresolved in this documentation update.
-- Additional in-memory smoke checks passed: no registered application routes;
-  JSON 404 for all 12 resource operations; OPTIONS `/cart` returns 204; a
-  temporary route using the current HTTP helpers returns 400 for invalid input,
-  200 with numeric money for valid input, and 415 for an unsupported content type.
-  Temporary smoke routes were not added to the application source.
-- The unit tests block network access and use local RSA keys / substituted JWKS
-  transport. These checks do not verify real Cognito, DynamoDB, S3, or a deployed API.
-- The configured Lambda runtime is Python 3.12; this run on Python 3.13.2 does
-  not establish Python 3.12 or Lambda packaging compatibility.
+- Environment: Windows, Python 3.13.2, boto3 1.43.92.
+- Production syntax/compilation checks passed, including Python 3.12 grammar.
+  Imports and `create_app()` succeeded with network connections blocked and
+  explicit placeholder settings that bypass `.env` loading.
+- Flask route-map inspection confirmed all five product operations. No route
+  handlers were invoked and no DynamoDB reads/writes were performed.
+- Static inspection confirmed administrator decorators on all three writes,
+  existing model/HTTP helpers, and unchanged GET implementations.
+- The installed botocore service model supports the configured conditional
+  PutItem/UpdateItem/DeleteItem parameters, `ALL_NEW`, and `ALL_OLD` on condition
+  failure, including the returned `Item` field. This is an SDK schema check,
+  not proof of live conditional-write behavior.
+- Dependency consistency (`pip check`) passed. Configuration inspection confirmed
+  the environment-driven product table name, Python 3.12 runtime, and absence
+  of application data-access IAM grants in `serverless.yml`.
+- No new tests were created and no test suite was run. The earlier foundation
+  test results are not evidence for these product operations. Existing application
+  tests still assume unregistered product routes and the old direct
+  `model_validate()` / `jsonify(model)` boundary; they require later alignment.
+- Python 3.12 runtime execution, Lambda packaging, real Cognito, DynamoDB, and
+  end-to-end HTTP behavior remain unverified.
 
 ## Remaining Integration / Deployment Work
 
-- Implement the business routes, repositories/services, and checkout domain logic.
+- Implement cart/order/upload routes, their repositories/services, and checkout logic.
 - Align the legacy application test with the current HTTP helpers and add
   appropriate coverage as resource endpoints are implemented.
 - Verify existing AWS resources separately when authorized; record actual resource
   identifiers and confirm S3/CloudFront asset delivery strategy.
-- Add least-privilege DynamoDB/S3 permissions when implementing AWS access.
-  `serverless.yml` currently grants no application data-access permissions and
-  declares no replacement tables, buckets, or User Pools.
+- Verify the execution role can use `dynamodb:Scan`, `dynamodb:GetItem`,
+  `dynamodb:PutItem`, `dynamodb:UpdateItem`, and `dynamodb:DeleteItem` on the
+  configured existing product table. `serverless.yml` currently grants no
+  application data-access permissions. IAM/infrastructure changes were not made
+  and require separate authorization; future S3 permissions are also pending.
 - Validate packaging for Python 3.12 / x86_64 and the declared Serverless v4
   setup (`package.json`: `^4.22.0`; `dockerizePip: non-linux`). Packaging and
   deployment were not run during this review.
 - Configure deployment-specific values, including allowed frontend CORS origins.
-- Coordinate frontend adoption of the agreed Bearer header; current code sends a raw token.
+- Coordinate frontend adoption of the agreed Bearer header; current code sends
+  a raw token and therefore cannot authenticate its new admin product calls.
+- Using Postman or an equivalent client, manually verify valid admin/non-admin
+  Cognito tokens and missing/invalid tokens; create defaults and field validation;
+  partial updates, explicit null/zero values, missing products, and deletion.
+  Inspect stored `searchText`, numeric fields, and responses for storage-field
+  leakage. Verify concurrent update/delete conflicts and full GET results against
+  the existing table. No such live requests were made in this task.
 - Frontend upload UI currently limits files to 2 MiB and offers image/*; the backend
   upload request model enforces the confirmed 3 MiB JPEG/PNG/WebP declaration
   rules, but the upload endpoint is still absent.
