@@ -85,8 +85,11 @@ class ProductRepository:
                 return products
             scan_kwargs = {"ExclusiveStartKey": last_key}
 
-    def get_product(self, product_id: str) -> Product | None:
-        response = self._get_table().get_item(Key={"id": product_id})
+    def get_product(self, product_id: str, *, consistent_read: bool = False) -> Product | None:
+        options = {"Key": {"id": product_id}}
+        if consistent_read:
+            options["ConsistentRead"] = True
+        response = self._get_table().get_item(**options)
         if "Item" not in response:
             return None
         return _product_from_item(response["Item"])

@@ -1,3 +1,7 @@
+from decimal import Decimal
+
+from pydantic import field_validator
+
 from models.common import Contract, Money, NonEmptyText, NonNegativeInt, PositiveInt
 
 
@@ -8,6 +12,23 @@ class CartAddRequest(Contract):
 
 class CartUpdateRequest(Contract):
     quantity: NonNegativeInt
+
+
+class CartLine(Contract):
+    """Internal stored row; never used as an HTTP request or response model."""
+
+    userId: NonEmptyText
+    productId: NonEmptyText
+    quantity: PositiveInt
+
+    @field_validator("quantity", mode="before")
+    @classmethod
+    def stored_quantity(cls, value):
+        if isinstance(value, Decimal):
+            if not value.is_finite() or value != value.to_integral_value():
+                raise ValueError("Stored cart quantity must be a finite integer.")
+            return int(value)
+        return value  # PositiveInt rejects bool, strings, floats, zero and negatives.
 
 
 class CartItem(Contract):

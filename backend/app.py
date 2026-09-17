@@ -1,4 +1,4 @@
-"""Application factory with public product routes and shared HTTP boundaries."""
+"""Application factory with product/cart routes and shared HTTP boundaries."""
 
 from flask import Flask, request
 
@@ -6,8 +6,11 @@ from auth.cognito import CognitoVerifier
 from config import Settings
 from errors import register_error_handlers
 from http_helpers import ExplicitJSONProvider
+from repositories.cart import CartRepository
 from repositories.products import ProductRepository
+from routes.cart import cart_blueprint
 from routes.products import products_blueprint
+from services.cart import CartService
 
 
 def create_app(settings: Settings | None = None) -> Flask:
@@ -18,8 +21,13 @@ def create_app(settings: Settings | None = None) -> Flask:
     app.extensions["settings"] = settings
     app.extensions["cognito_verifier"] = CognitoVerifier(settings)
     app.extensions["product_repository"] = ProductRepository(settings)
+    app.extensions["cart_repository"] = CartRepository(settings)
+    app.extensions["cart_service"] = CartService(
+        app.extensions["cart_repository"], app.extensions["product_repository"],
+    )
     register_error_handlers(app)
     app.register_blueprint(products_blueprint)
+    app.register_blueprint(cart_blueprint)
 
     @app.before_request
     def preflight():

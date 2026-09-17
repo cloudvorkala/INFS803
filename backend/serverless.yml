@@ -38,7 +38,17 @@ provider:
             Fn::Sub:
               - 'arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ProductsTable}'
               - ProductsTable: ${env:PRODUCTS_TABLE}
-  # No index access, cart/order permissions, or S3/Cognito IAM grants are needed yet.
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            Fn::Sub:
+              - 'arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CartsTable}'
+              - CartsTable: ${env:CARTS_TABLE}
+  # No index access, Orders, or S3/Cognito IAM grants are needed yet.
   # Leave deploymentBucket unset: Serverless artifacts use its own bucket, not UPLOADS_BUCKET.
 
 functions:

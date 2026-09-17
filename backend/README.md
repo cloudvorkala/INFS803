@@ -1,11 +1,15 @@
 # Paperbound backend
 
+See the maintained [REST API reference](../docs/api-reference.md) for endpoint
+usage, request/response examples, authentication, and verification status.
+
 The backend supplies Flask scaffolding, configuration, Cognito authentication,
 Pydantic contracts, JSON errors, CORS, and initial Serverless configuration.
 Public `GET /products` and `GET /products/:id` routes read the configured existing
 DynamoDB product table. Admin-only `POST /products`, `PUT /products/:id`, and
-`DELETE /products/:id` persist product changes in the same table. Cart/order
-endpoints, checkout logic, and S3 writes are not implemented.
+`DELETE /products/:id` persist product changes in the same table. Authenticated
+Cart endpoints are implemented; order endpoints, checkout logic, and S3 writes
+are not implemented.
 
 ## Product reads
 
@@ -47,7 +51,8 @@ chain; Lambda must use its execution role. It never creates a table or index.
 The Serverless execution-role configuration grants `dynamodb:Scan` and
 `dynamodb:GetItem`, plus the three implemented product write actions, only on
 the configured product table. No index is accessed or granted permissions.
-The configuration has not been deployed; live role permissions remain unverified.
+Product CRUD and its live IAM permissions have been manually AWS-verified;
+Cart changes remain undeployed/unverified. See the API reference for current status.
 
 The frontend's `listProducts()` / `getProduct()` bindings already use these paths
 and response shapes. Its query builder omits the `All` category sentinel; the
@@ -177,7 +182,10 @@ and decoded 3 MiB limit. Actual image-content inspection and S3 storage belong t
 the future upload implementation; this foundation does not claim that arbitrary
 bytes declared as an image have been decoded as a real image.
 
-## First dev deployment (prepared, not deployed)
+## First dev deployment preparation (historical)
+
+The preparation notes below predate the successful manual Product CRUD deployment
+verification recorded in [current-status.md](../docs/current-status.md).
 
 `serverless.yml` retains Python 3.12 / x86_64, ap-southeast-2 by default, one
 Lambda, and REST API proxy events for ANY / and ANY /{proxy+}.

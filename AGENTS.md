@@ -16,6 +16,10 @@ By default, only modify files under `/backend`.
 Do not modify `/docs`, `AGENTS.md`, or other repository-level files unless
 explicitly requested.
 
+Exception: API changes require the accompanying `docs/api-reference.md` update
+described under API Reference Maintenance below; this documentation update is
+part of the authorized API task.
+
 ---
 
 ## Assignment
@@ -161,6 +165,28 @@ problematic, report the issue before changing the implementation or contract.
 
 Do not invent unresolved frontend-facing schemas when the contract does not
 define them clearly. Report the missing decision first.
+
+---
+
+## API Reference Maintenance
+
+`docs/api-reference.md` is the maintained developer-facing REST API usage
+reference. `docs/api-contract.md` remains authoritative for design and contract
+decisions.
+
+Whenever an API endpoint, request body, response body, authentication requirement,
+validation rule, or HTTP status behavior changes, update `docs/api-reference.md`
+in the same task. Document only behavior supported by the authoritative contract
+or current implementation, clearly identifying unimplemented APIs.
+
+Do not rewrite `docs/api-contract.md` merely to match an implementation change.
+If implementation conflicts with the authoritative contract, report the conflict
+instead of silently changing the contract or documenting the conflict as agreed.
+
+Verification status in the reference must separately distinguish implemented,
+locally/manual verified, and AWS/manual verified. Use recorded evidence in
+`docs/current-status.md`; never mark an endpoint verified solely because code or
+generated tests exist. If manual verification is not recorded, say so.
 
 ---
 
