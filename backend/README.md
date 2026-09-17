@@ -44,9 +44,10 @@ repository. Creating the app does not create an SDK session or contact DynamoDB.
 The table name and region come from `Settings` (`PRODUCTS_TABLE=Paperbound-Products`
 and the configured `AWS_REGION`). The repository uses the default AWS credential
 chain; Lambda must use its execution role. It never creates a table or index.
-The current Serverless configuration still has no application data-access IAM
-grants. Actual reads require `dynamodb:Scan` and `dynamodb:GetItem` on the existing
-product table; any IAM/infrastructure change or deployment needs separate authorization.
+The Serverless execution-role configuration grants `dynamodb:Scan` and
+`dynamodb:GetItem`, plus the three implemented product write actions, only on
+the configured product table. No index is accessed or granted permissions.
+The configuration has not been deployed; live role permissions remain unverified.
 
 The frontend's `listProducts()` / `getProduct()` bindings already use these paths
 and response shapes. Its query builder omits the `All` category sentinel; the
@@ -97,9 +98,9 @@ JSON serialization. Request models reject `id`, identity fields, and other unkno
 fields. Expected request-validation errors use 400; unexpected SDK/internal
 failures use the existing safe 500 envelope.
 
-In addition to read permissions, the execution role needs `dynamodb:PutItem`,
-`dynamodb:UpdateItem`, and `dynamodb:DeleteItem` on the configured product table.
-No IAM configuration or live resources were changed. The frontend still sends
+In addition to read permissions, the execution-role configuration includes
+`dynamodb:PutItem`, `dynamodb:UpdateItem`, and `dynamodb:DeleteItem` on the configured
+product table. No live resources were changed. The frontend still sends
 raw JWTs and must adopt the agreed Bearer header before its admin calls will work.
 See `../docs/current-status.md` for the latest validation and manual verification work.
 
@@ -176,25 +177,60 @@ and decoded 3 MiB limit. Actual image-content inspection and S3 storage belong t
 the future upload implementation; this foundation does not claim that arbitrary
 bytes declared as an image have been decoded as a real image.
 
-## Deployment configuration (not deployed)
+## First dev deployment (prepared, not deployed)
 
-`serverless.yml` declares Python 3.12, Sydney by default, one Lambda, and REST
-API proxy events for ANY / and ANY /{proxy+}. `lambda_handler.py` calls the Python
-`serverless-wsgi` adapter directly. There is no Gateway authorizer: Flask owns
-authentication and routing. No tables, buckets, or pools are declared and no
-application data-access IAM permissions are granted in this step.
+`serverless.yml` retains Python 3.12 / x86_64, ap-southeast-2 by default, one
+Lambda, and REST API proxy events for ANY / and ANY /{proxy+}.
+`lambda_handler.py` calls `serverless-wsgi` directly; Flask owns routing and
+authentication. Existing application tables, bucket, and Cognito resources are
+only referenced through environment variables and are never declared for creation.
 
-`package.json` declares Serverless `^4.22.0` (minimum 4.22.0, below 5), meeting
-the minimum for the built-in Python requirements integration. No project-local
-Serverless installation or lockfile was present when this configuration was
-reviewed, so the installed version and actual packaging remain unverified.
-`dockerizePip: non-linux` uses Docker on Windows/macOS and native packaging on
-Linux. Linux packaging must still use Python 3.12 and dependencies compatible
-with the configured Lambda x86_64 runtime; Linux alone does not guarantee that.
-No additional Serverless plugin is necessary. A future packaging/deployment check
-requires the Node dependency, Docker, and any Framework authentication requirements.
-Do not deploy or inspect AWS without separate authorization. Reference:
-https://www.serverless.com/framework/docs/providers/aws/guide/python
+Deployment variable resolution loads the local `.env`; process environment
+variables take precedence, and an optional `.env.dev` can affect stage settings.
+All application settings are explicitly forwarded to Lambda except `AWS_REGION`:
+Lambda supplies that reserved variable from the deployment region. Do not add it
+to `provider.environment`. See the
+[AWS reserved-variable reference](https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-runtime).
+The existing exact-origin CORS policy is unchanged; the current local configuration
+includes `http://localhost:5173`. No production frontend origin has been invented.
+
+Serverless is pinned to 4.22.0 in both configuration and `package.json`, with
+`package-lock.json` for reproducible Node dependency installation. Use the local
+CLI: the global `serverless` installation on this machine is v3.40.0. The
+[built-in Python integration](https://www.serverless.com/framework/docs/providers/aws/guide/python)
+uses Docker for dependency packaging, explicitly selecting
+`public.ecr.aws/sam/build-python3.12:latest-x86_64`. The host's Python 3.13 virtual
+environment is not packaged or used to build Lambda dependencies. No additional
+Serverless plugin or local Python 3.12 installation is required for this Docker
+packaging path. Start Docker Desktop with its Linux engine before packaging.
+
+`.env` files, the local virtual environment, tests, Node modules, and Node manifests
+are excluded from the Lambda ZIP. The application uploads bucket is not assigned
+as a deployment bucket: Serverless manages a separate artifact bucket. The first
+deployment may create that bucket and the API/Lambda deployment stack, including
+its execution role and logs; it must not recreate application data resources.
+
+From `backend/`, install dependencies on a fresh checkout with `npm.cmd ci`.
+Authenticate Serverless v4 with `npx.cmd --no-install serverless login` if needed,
+and configure AWS deployment credentials using the normal AWS profile/SSO flow.
+Select the intended account/profile in the terminal; never put credentials into
+source or `.env`. The deployment identity needs permissions to deploy the stack
+and manage Serverless artifacts; the product-only execution policy is for Lambda,
+not for the deployer's identity.
+
+When those prerequisites are ready, run the first deployment yourself:
+
+```powershell
+npx.cmd --no-install serverless deploy --stage dev --region ap-southeast-2
+```
+
+Preparation validation on 2026-09-17 passed YAML/configuration, local `.env`
+validation (values withheld), exact IAM-to-repository comparison, dependency
+consistency, and Serverless v4 `print --path provider.runtime` resolution.
+The Docker client is installed but its Linux engine is not running, so an actual
+dependency build / ZIP package was not produced or verified. No deployment or
+live AWS resource operation was performed. After deployment, manually verify the
+API URL, CORS, Cognito admin authorization, and product CRUD using an HTTP client.
 
 Frontend integration still requires its owner to adopt the Bearer header. The
 frontend currently restricts uploads to 2 MiB and offers more MIME types than the
