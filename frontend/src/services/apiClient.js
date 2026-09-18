@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------------
    The single place the client layer talks to the backend.
 
-   Every call attaches the current ID token as the `Authorization` header, which
-   is exactly what API Gateway's Cognito Authorizer inspects before the request
-   ever reaches Lambda. When VITE_API_BASE_URL is empty the same call is routed
-   to `mockApi.js` instead, so the UI is fully functional before deployment.
+   Every call attaches the current Cognito ID token as an `Authorization: Bearer
+   <token>` header, which is what the backend expects for all protected/admin
+   requests. When VITE_API_BASE_URL is empty the same call is routed to
+   `mockApi.js` instead, so the UI is fully functional before deployment.
 
    Components never call fetch() directly — they call the named functions at the
    bottom of this file. That keeps the endpoint list in one auditable place,
@@ -37,10 +37,7 @@ async function request(method, path, body) {
       method,
       headers: {
         'Content-Type': 'application/json',
-        // API Gateway's Cognito Authorizer reads the raw JWT from this header.
-        // If your teammate uses a custom Lambda authorizer expecting a Bearer
-        // prefix, change this one line to `Bearer ${token}`.
-        ...(token ? { Authorization: token } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
