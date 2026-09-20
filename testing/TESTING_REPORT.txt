@@ -1,0 +1,35 @@
+TESTING REPORT
+
+Tester: Tandra
+Branch: feature/tandra-testing
+
+Test Case 1
+Feature: Browse Category
+Steps:
+1. Open the application.
+2. Go to Browse Category.
+3. Select a category.
+
+Expected Result:
+The selected category should display correctly.
+
+Actual Result:
+The category displayed correctly.
+
+Status: PASS
+
+
+Test Case 2
+Feature: Filter
+Steps:
+1. Open the filter option.
+2. Select a filter.
+3. Check the displayed results.
+
+Expected Result:
+Only matching results should be displayed.
+
+Actual Result:
+The filter worked correctly.
+
+Status: PASS
