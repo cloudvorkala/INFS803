@@ -33,3 +33,38 @@ Actual Result:
 The filter worked correctly.
 
 Status: PASS
+
+
+Test Case 3: Search Function
+
+Steps:
+1. Open the application.
+2. Search for "The Salt Path Home".
+3. Check the displayed result.
+
+Expected Result:
+Only the matching book should be displayed.
+
+Actual Result:
+The matching book was displayed correctly.
+
+Status: PASS
+
+Evidence:
+Evidence 3 – Search result showing "The Salt Path Home".
+
+Test Case 4
+Feature: Sort by Price – Low to High
+
+Steps:
+1. Open the application.
+2. Select "Price: Low to High" from the sorting option.
+3. Check the order of the displayed books.
+
+Expected Result:
+Books should be displayed from the lowest price to the highest price.
+
+Actual Result:
+The books were sorted correctly from low price to high price.
+
+Status: PASS
