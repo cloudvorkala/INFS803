@@ -1,4 +1,9 @@
 
+param(
+    [ValidateSet("race", "rollback")]
+    [string]$Case = "race"
+)
+
 $ErrorActionPreference = "Stop"
 
 # Load .env.k6
@@ -64,4 +69,4 @@ if ($awsCred.SessionToken) {
 Write-Host "AWS credentials exported."
 
 # Run test
-k6 run -e CASE=race test-checkout.js
+k6 run -e CASE=$Case test-checkout.js
