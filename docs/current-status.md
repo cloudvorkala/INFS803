@@ -1,22 +1,23 @@
 # Current Backend Status
 
-Last updated: 2026-09-17, including local Cart implementation and the user's
-report of successful manual verification of the first AWS dev deployment.
+Last updated: 2026-09-21, including Checkout implementation and the user's report
+of local/AWS Cart verification, including isolation between two Cognito users.
 
 ## Implementation Summary
 
-The backend foundation, five Product CRUD operations, and four authenticated
-Cart operations are implemented in the repository. Product reads are public;
-product writes require a verified Cognito ID token and exact `admins` group
-membership. Cart ownership uses only the verified Cognito `sub`. Checkout,
-orders, and uploads remain unimplemented. CORS OPTIONS requests return 204,
+The backend foundation, five Product CRUD operations, four authenticated
+Cart operations, and POST /checkout are implemented in the repository. Product
+reads are public; product writes require a verified Cognito ID token and exact `admins` group
+membership. Cart/Checkout ownership uses only the verified Cognito `sub`.
+GET /orders and POST /upload_file remain unimplemented and are reserved for
+another backend team member. CORS OPTIONS requests return 204,
 which is not a functional business API operation.
 
-The contract defines 12 operations, including 4 POST operations. Nine operations
-are implemented, including two POSTs; three operations remain. The assignment's
-minimum of 10 functional operations and 3 POST operations is not yet met.
-All five deployed product operations have now been manually verified. Cart
-changes and their IAM additions have not been deployed or manually AWS-verified.
+The contract defines 12 operations, including 4 POST operations. Ten operations
+are implemented, including three POSTs; two operations remain. This meets the
+assignment's operation-count minimum in code, not yet as verified deployed APIs.
+Product CRUD is manually AWS-verified; Cart is manually verified locally and
+through the deployed AWS API. Checkout is not deployed or manually verified.
 
 ## First AWS Dev Deployment: Manually Verified
 
@@ -34,20 +35,22 @@ The user confirmed end-to-end verification through the deployed API Gateway URL:
 - `searchText` remains storage-only and is maintained on updates; Product
   numeric fields serialize correctly as JSON numbers.
 
-Cart, Orders, Checkout, uploads, S3 delivery, and frontend integration have
-**not** been verified. The scope above records user-reported manual results,
-not additional cloud checks performed during this Cart implementation.
+The user subsequently confirmed all four Cart endpoints manually verified
+locally and through the deployed AWS API, including ownership isolation between
+two Cognito users. These are user-reported results, not new cloud checks by the
+agent. Checkout, GET /orders, uploads, S3 delivery, and frontend integration
+remain **unverified**.
 
 | Area | Current code | Remaining work |
 | --- | --- | --- |
-| Flask / Lambda | Application factory, cached WSGI application, REST proxy adapter, five Product and four Cart operations. | Implement checkout, order, and upload routes. |
+| Flask / Lambda | Application factory, WSGI adapter, five Product, four Cart, and one Checkout operation. | Teammate implements GET /orders and POST /upload_file. |
 | Configuration | Product deployment settings work; exact CORS policy retained. | Configure and verify frontend integration and remaining services. |
-| Authentication | Cognito ID token validation and exact `admins` authorization manually verified; Cart routes use verified `sub`. | Verify Cart ownership isolation in AWS; apply ownership to orders. |
-| API models | Product and Cart models wired into routes; checkout, order, and upload contracts available. | Implement remaining operations using their models. |
-| HTTP handling | Product/Cart routes use explicit validation / serialization and JSON errors; CORS and body limit retained. | Align legacy application tests and integrate remaining routes. |
-| DynamoDB / checkout | Product CRUD/IAM manually verified; Cart repository/service and scoped IAM implemented locally. | Verify Cart persistence/IAM; implement order repository and checkout transaction. |
+| Authentication | Cognito/admin Product checks and two-user Cart isolation manually verified; Checkout uses verified sub. | Verify Checkout ownership; apply ownership to future order listing. |
+| API models | Product, Cart, Checkout, ShippingAddress and Order models wired into implemented routes. | Implement remaining operations using their models. |
+| HTTP handling | Product/Cart/Checkout use explicit validation / serialization and JSON errors; CORS and body limit retained. | Align legacy application tests and integrate remaining routes. |
+| DynamoDB / checkout | Product/Cart manually verified; atomic Checkout persistence and Orders transaction-only IAM implemented locally. | Verify Checkout transaction, conflicts, Orders persistence and IAM. |
 | S3 uploads | MIME declaration, strict base64, non-empty decoded data, and 3 MiB size validation in the request model. | Actual image-content validation, S3 writes, object keys, and usable asset URLs. |
-| Deployment | First AWS dev deployment manually verified end-to-end for Product CRUD. | Verify remaining services and frontend integration as implemented. |
+| Deployment | Product CRUD and Cart manually verified through deployed AWS API. | Checkout deployment/verification and remaining integrations. |
 
 ## Confirmed Target
 
@@ -115,7 +118,12 @@ not additional cloud checks performed during this Cart implementation.
   fields are required; malformed stored data and unexpected SDK errors produce
   the existing safe 500 envelope.
 
-## Implemented Cart Operations (Not Yet AWS-Verified)
+## Implemented Cart Operations (Locally and AWS Manually Verified)
+
+User-reported verification on 2026-09-21 covers all four operations locally and
+through the deployed API, including isolation between two Cognito users. The
+implementation-time checks below remain historical local checks, not evidence
+that every error/pagination/concurrency scenario has been exercised.
 
 All four routes require `Authorization: Bearer <Cognito ID token>` through the
 existing `require_auth` decorator; no admin membership is required. Ownership
@@ -158,14 +166,60 @@ comes exclusively from verified `sub`, never a request field or identity header.
   Decimal, then the existing model serializers produce JSON numbers. Empty carts
   have no items and zero counts/totals. Invalid stored data/unexpected failures
   use the existing safe 500 envelope; `searchText` is never exposed.
-- Local Lambda IAM adds only `Query`, `GetItem`, `UpdateItem`, and `DeleteItem`
+- The Cart implementation added only `Query`, `GetItem`, `UpdateItem`, and `DeleteItem`
   on the configured Cart table ARN. Product permissions remain unchanged; no
-  index, Orders, or S3 grants, resources, or architecture changes were added.
+  index, Orders, or S3 grants, resources, or architecture changes were added then.
 - Local Python 3.12 grammar/compilation, imports, offline app creation, all nine
   route registrations, `pip check`, YAML/IAM scope, SDK conditional-write schema,
   and dependency/config inspection passed. The interpreter was Windows Python
   3.13.2; this was not Lambda Python 3.12 execution or a package build. No tests
   were generated/run, no handlers invoked, and no live AWS APIs or deployment used.
+
+## Implemented POST /checkout (Not Manually Verified)
+
+- [routes/checkout.py](../backend/routes/checkout.py) uses existing `require_auth`,
+  verified `sub`, `CheckoutRequest`/`ShippingAddress`, and the explicit response
+  helper. Success is 201 with the existing Order model; no GET /orders or upload
+  route/service behavior was added.
+- [services/checkout.py](../backend/services/checkout.py) reuses the owner-partition,
+  paginated Cart Query and strongly consistent Product mapping. It deliberately
+  avoids CartService's lazy cleanup, so missing Products fail without cart writes.
+  Empty cart returns 400 `Your cart is empty.`; over 40 unique lines returns 400
+  `Checkout supports at most 40 unique cart lines.` before transaction submission.
+  Missing Products return 404 `Product not found.`; insufficient stock returns
+  409 `Requested quantity exceeds available stock.`.
+- Order IDs use `ord-` plus UUID4 hex; timestamps are UTC. Stored Orders use
+  `userId`/`placedAtOrderId`, with `<ISO timestamp>#<orderId>` as the sort key.
+  Purchase-time item snapshots contain exactly productId/title/author/price/
+  quantity/subtotal. Decimal arithmetic computes totals; Python-mode dumps and
+  explicit DynamoDB serialization retain numeric storage, and existing Pydantic
+  JSON serializers return numbers. Internal sort keys are not exposed.
+- [repositories/checkout.py](../backend/repositories/checkout.py) submits one
+  TransactWriteItems call: one conditional Order Put, one Product Update and one
+  owned Cart Delete per line. At 40 lines this is 81 operations. Stock must remain
+  sufficient, price/title/author must match the snapshot, and each cart quantity
+  must match the observed value. A conflicting condition cancels the whole write
+  with 409 `Checkout conflict. Refresh your cart and try again.`. Unexpected
+  storage/capacity/configuration failures retain safe 500 responses.
+- No separate writes, partial cleanup, application retry loop, cart revision,
+  or checkout idempotency layer was added. Unobserved newly added cart lines are
+  retained; a delete/re-add or change/revert to identical values cannot be detected
+  without revisions. A lost success response leaves an ambiguous outcome; inspect
+  persistence before retrying. AWS item/transaction byte limits still apply, so
+  the 40-line operation limit is not a guarantee for arbitrarily large records.
+- IAM preserves Product/Cart permissions and adds only Orders `dynamodb:PutItem`
+  conditioned on `dynamodb:EnclosingOperation = TransactWriteItems`. Transactions
+  are authorized through underlying item actions, not a separate
+  `dynamodb:TransactWriteItems` IAM grant; see
+  [AWS transaction IAM documentation](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis-iam.html).
+  No direct Orders read/write permissions, new resources, S3 grants, or changes
+  to the serverless architecture were introduced.
+- Local Python 3.12 grammar/compilation, imports, offline app creation, ten route
+  registrations, request/response schema inspection, SDK transaction shape,
+  YAML/IAM scope and static operation-count inspection passed on Windows Python
+  3.13.2. No tests were generated/run, no handlers/repositories invoked, and no
+  live AWS APIs or deployment used. Checkout is not locally manually verified
+  or AWS-verified; no new package build or Lambda runtime execution was performed.
 
 ## Implemented Foundation
 
@@ -217,7 +271,7 @@ comes exclusively from verified `sub`, never a request field or identity header.
   Shipping address strings are trimmed and required; upload models validate the
   declared JPEG/PNG/WebP MIME type and decoded size, but do not inspect whether
   the decoded bytes form a real image.
-- Product and Cart body-taking routes use `parse_json_request(RequestModel)`; responses use
+- Product, Cart and Checkout body-taking routes use `parse_json_request(RequestModel)`; responses use
   `api_response(response_model, status=...)` from
   [http_helpers.py](../backend/http_helpers.py). Request-model validation becomes
   400 `{ "message": "..." }` without echoing input values. Domain/response model
@@ -234,16 +288,13 @@ comes exclusively from verified `sub`, never a request field or identity header.
 
 ## Confirmed Business Rules Still Awaiting Implementation
 
-- Checkout, order history, and upload must follow
+- Order history and upload must follow
   [api-contract.md](api-contract.md). Models alone do not implement these
   operations or enforce resource ownership in persistence.
 - Keep Paperbound-Products (id), Paperbound-Carts (userId/productId), and
   Paperbound-Orders (userId/placedAtOrderId), including existing product indexes.
 - Initially reference existing DynamoDB, S3, and Cognito resources through configuration.
   Do not provision replacements before separate verification of actual AWS state.
-- Checkout must use one DynamoDB transaction, with at most 40 unique cart lines.
-  The current constant does not enforce that limit; stock checks, total
-  calculation, order creation, and cart-line deletion are not implemented.
 - No cart revision fields or checkout idempotency keys in version one.
 - Uploads must accept filename/dataUrl, allow JPEG/PNG/WebP up to 3 MiB decoded,
   upload to S3, and return { url, s3Key }; no presigned upload workflow.
@@ -338,20 +389,24 @@ Lightweight local validation on 2026-09-14, after implementing admin writes:
 
 ## Remaining Integration / Deployment Work
 
-- Implement order/upload routes, their repositories/services, and checkout logic.
-- Before a separately authorized Cart deployment, review `CARTS_TABLE`, the
-  `userId`/`productId` key schema, and the table-scoped IAM change. After deployment,
-  use Postman against API Gateway to verify all four Cart routes with two users'
-  Cognito ID tokens: 401 failures, ownership isolation/client identity rejection,
-  POST increments/defaults, PUT replacement/zero, DELETE, and full/empty responses.
-  Check strict quantity rejection, missing Product/cart-line 404s, stock/conflict
-  409s, stale-reference cleanup, Query pagination, and JSON numeric totals
-  (for example 19.99 x 2 = 39.98). Verify real Cart-table IAM/persistence and
-  rerun Product CRUD as a regression check. These remain manual integration work.
+- GET /orders and POST /upload_file belong to another backend team member and
+  remain unimplemented.
+- Before separately authorized Checkout deployment, review configured table names,
+  Orders `userId`/`placedAtOrderId` schema and transaction-only IAM. Then manually
+  exercise POST /checkout locally and through API Gateway with two users: valid
+  201 Order, address trimming and invalid/extra fields (400), invalid tokens (401),
+  ownership isolation, empty/41-line carts (400), 40-line success, missing Product
+  (404), and insufficient stock (409). Confirm JSON numbers (19.99 x 2 = 39.98),
+  immutable snapshots, stored sort key, stock deductions and purchased-line removal.
+- Exercise multi-line rollback and competing checkouts/cart edits/Product edits:
+  cancellation must leave no Order, partial stock deduction or partial cart clear;
+  successful concurrent transactions must never oversell. Verify new cart lines
+  remain untouched, Query pagination, real IAM authorization, and Product/Cart
+  regressions. Do not treat code/static checks as proof of these behaviors.
 - Align the legacy application test with the current HTTP helpers and add
   appropriate coverage as resource endpoints are implemented.
 - Verify remaining cloud integrations when implemented and authorized, including
-  Cart/Orders persistence, uploads, and S3/CloudFront asset delivery. Future S3
+  Checkout/Orders persistence, uploads, and S3/CloudFront asset delivery. Future S3
   permissions remain pending implementation and authorization.
 - Configure deployment-specific values, including allowed frontend CORS origins.
 - Coordinate frontend adoption of the agreed Bearer header; current code sends
@@ -364,4 +419,4 @@ Lightweight local validation on 2026-09-14, after implementing admin writes:
 - Verify newly implemented operations through the deployed API using curl,
   Postman, or an equivalent HTTP client.
 
-No live AWS inspection or deployment was performed for this Cart implementation.
+No live AWS inspection or deployment was performed for this Checkout implementation.
