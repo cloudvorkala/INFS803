@@ -8,8 +8,9 @@ Pydantic contracts, JSON errors, CORS, and initial Serverless configuration.
 Public `GET /products` and `GET /products/:id` routes read the configured existing
 DynamoDB product table. Admin-only `POST /products`, `PUT /products/:id`, and
 `DELETE /products/:id` persist product changes in the same table. Authenticated
-Cart endpoints are implemented; order endpoints, checkout logic, and S3 writes
-are not implemented.
+Cart endpoints and POST /checkout are implemented. All ten Product/Cart/Checkout
+operations are deployed to AWS and have passed user-reported testing (2026-09-21).
+GET /orders and POST /upload_file remain unimplemented.
 
 ## Product reads
 
@@ -52,7 +53,8 @@ The Serverless execution-role configuration grants `dynamodb:Scan` and
 `dynamodb:GetItem`, plus the three implemented product write actions, only on
 the configured product table. No index is accessed or granted permissions.
 Product CRUD and its live IAM permissions have been manually AWS-verified;
-Cart changes remain undeployed/unverified. See the API reference for current status.
+Cart and Checkout are also deployed and have passed user-reported AWS testing.
+See the API reference for current status.
 
 The frontend's `listProducts()` / `getProduct()` bindings already use these paths
 and response shapes. Its query builder omits the `All` category sentinel; the
@@ -145,8 +147,8 @@ accepts explicit null. Monetary values remain Decimal internally and serialize
 as JSON numbers through the HTTP response helper below. Request models reject
 unknown fields, including ownership IDs.
 Cart add quantities are positive integers (default 1); cart update quantities are
-non-negative integers. The 40-line checkout limit is declared for later domain code;
-it is not enforced on cart reads or historical order lists.
+non-negative integers. Checkout enforces the 40-line maximum before its atomic
+transaction; the limit is not imposed on Cart reads.
 
 ### HTTP boundaries for future routes
 

@@ -533,7 +533,7 @@ As recorded in [current-status.md](current-status.md) on 2026-09-21:
 | `POST /cart` | Yes | Yes, user-reported | Yes, user-reported |
 | `PUT /cart/:productId` | Yes | Yes, user-reported | Yes, user-reported |
 | `DELETE /cart/:productId` | Yes | Yes, user-reported | Yes, user-reported |
-| `POST /checkout` | Yes | No | No |
+| `POST /checkout` | Yes | Not separately recorded | Yes, user-reported |
 | `GET /orders` | No | No | No |
 | `POST /upload_file` | No | No | No |
 
@@ -547,12 +547,13 @@ The user reported Cart manual verification both locally and through the deployed
 AWS API, including isolation between two Cognito users. This does not establish
 every pagination/error/concurrency edge case.
 
-Checkout is implemented but has not been deployed or manually verified locally
-or in AWS. Recorded syntax/import, route registration, schema and configuration
-checks are **not manual endpoint verification**. No verification is inferred from
-code or generated tests. Checkout atomicity, conflicts, money, identity isolation,
-and real Orders persistence/IAM remain manual integration work. GET /orders,
-uploads, S3 delivery, and frontend integration remain unverified.
+The user now confirms that all ten implemented Product, Cart, and Checkout
+operations have been successfully deployed to AWS and passed testing. Checkout
+local manual verification was not separately reported, and a detailed inventory
+of tested edge cases was not supplied. Recorded syntax/import, route registration,
+schema and configuration checks are **not manual endpoint verification**; cloud
+verification here is based on the user's report, not code or generated tests.
+GET /orders, uploads, S3 delivery, and frontend integration remain unverified.
 
 The contract's dated 2026-09-11 implementation-status paragraph describes an older
 snapshot with no business routes; it is not the current implementation inventory.

@@ -1,7 +1,7 @@
 # Current Backend Status
 
-Last updated: 2026-09-21, including Checkout implementation and the user's report
-of local/AWS Cart verification, including isolation between two Cognito users.
+Last updated: 2026-09-21. The user confirms that all currently implemented
+Product, Cart, and Checkout operations are deployed to AWS and have passed testing.
 
 ## Implementation Summary
 
@@ -15,9 +15,10 @@ which is not a functional business API operation.
 
 The contract defines 12 operations, including 4 POST operations. Ten operations
 are implemented, including three POSTs; two operations remain. This meets the
-assignment's operation-count minimum in code, not yet as verified deployed APIs.
-Product CRUD is manually AWS-verified; Cart is manually verified locally and
-through the deployed AWS API. Checkout is not deployed or manually verified.
+assignment's operation-count minimum with ten deployed, user-verified APIs,
+including three POST operations. Product CRUD, Cart, and Checkout have passed
+user-reported AWS testing. Cart also has recorded local manual verification;
+local manual Checkout verification has not been separately reported.
 
 ## First AWS Dev Deployment: Manually Verified
 
@@ -38,19 +39,22 @@ The user confirmed end-to-end verification through the deployed API Gateway URL:
 The user subsequently confirmed all four Cart endpoints manually verified
 locally and through the deployed AWS API, including ownership isolation between
 two Cognito users. These are user-reported results, not new cloud checks by the
-agent. Checkout, GET /orders, uploads, S3 delivery, and frontend integration
-remain **unverified**.
+agent. The user now also confirms successful AWS deployment and testing of
+POST /checkout. All ten implemented operations are therefore AWS-verified on
+the basis of user-reported results. A detailed test-case inventory was not
+provided. GET /orders, uploads, S3 delivery, and frontend integration remain
+**unverified**.
 
 | Area | Current code | Remaining work |
 | --- | --- | --- |
 | Flask / Lambda | Application factory, WSGI adapter, five Product, four Cart, and one Checkout operation. | Teammate implements GET /orders and POST /upload_file. |
 | Configuration | Product deployment settings work; exact CORS policy retained. | Configure and verify frontend integration and remaining services. |
-| Authentication | Cognito/admin Product checks and two-user Cart isolation manually verified; Checkout uses verified sub. | Verify Checkout ownership; apply ownership to future order listing. |
+| Authentication | Cognito/admin Product checks and two-user Cart isolation manually verified; Checkout uses verified sub. | Apply ownership to future order listing; retain isolation regression coverage. |
 | API models | Product, Cart, Checkout, ShippingAddress and Order models wired into implemented routes. | Implement remaining operations using their models. |
 | HTTP handling | Product/Cart/Checkout use explicit validation / serialization and JSON errors; CORS and body limit retained. | Align legacy application tests and integrate remaining routes. |
-| DynamoDB / checkout | Product/Cart manually verified; atomic Checkout persistence and Orders transaction-only IAM implemented locally. | Verify Checkout transaction, conflicts, Orders persistence and IAM. |
+| DynamoDB / checkout | Product/Cart/Checkout deployed and user-reported AWS tests passed. | Retain transaction/conflict regression coverage; implement order listing. |
 | S3 uploads | MIME declaration, strict base64, non-empty decoded data, and 3 MiB size validation in the request model. | Actual image-content validation, S3 writes, object keys, and usable asset URLs. |
-| Deployment | Product CRUD and Cart manually verified through deployed AWS API. | Checkout deployment/verification and remaining integrations. |
+| Deployment | Product CRUD, Cart and Checkout deployed and user-reported AWS tests passed. | Remaining APIs and frontend integration. |
 
 ## Confirmed Target
 
@@ -175,7 +179,11 @@ comes exclusively from verified `sub`, never a request field or identity header.
   3.13.2; this was not Lambda Python 3.12 execution or a package build. No tests
   were generated/run, no handlers invoked, and no live AWS APIs or deployment used.
 
-## Implemented POST /checkout (Not Manually Verified)
+## Implemented POST /checkout (AWS Deployment and Testing Confirmed)
+
+The user reports successful AWS deployment and testing on 2026-09-21. Local
+manual verification is not separately recorded; the checks below describe the
+earlier implementation stage, not the subsequent cloud testing.
 
 - [routes/checkout.py](../backend/routes/checkout.py) uses existing `require_auth`,
   verified `sub`, `CheckoutRequest`/`ShippingAddress`, and the explicit response
@@ -218,8 +226,9 @@ comes exclusively from verified `sub`, never a request field or identity header.
   registrations, request/response schema inspection, SDK transaction shape,
   YAML/IAM scope and static operation-count inspection passed on Windows Python
   3.13.2. No tests were generated/run, no handlers/repositories invoked, and no
-  live AWS APIs or deployment used. Checkout is not locally manually verified
-  or AWS-verified; no new package build or Lambda runtime execution was performed.
+  live AWS APIs or deployment used during implementation. At that stage, no
+  package build or Lambda runtime execution was performed. Subsequent successful
+  AWS deployment/testing is user-confirmed above.
 
 ## Implemented Foundation
 
@@ -391,7 +400,7 @@ Lightweight local validation on 2026-09-14, after implementing admin writes:
 
 - GET /orders and POST /upload_file belong to another backend team member and
   remain unimplemented.
-- Before separately authorized Checkout deployment, review configured table names,
+- For future Checkout regression runs, review configured table names,
   Orders `userId`/`placedAtOrderId` schema and transaction-only IAM. Then manually
   exercise POST /checkout locally and through API Gateway with two users: valid
   201 Order, address trimming and invalid/extra fields (400), invalid tokens (401),
@@ -406,7 +415,7 @@ Lightweight local validation on 2026-09-14, after implementing admin writes:
 - Align the legacy application test with the current HTTP helpers and add
   appropriate coverage as resource endpoints are implemented.
 - Verify remaining cloud integrations when implemented and authorized, including
-  Checkout/Orders persistence, uploads, and S3/CloudFront asset delivery. Future S3
+  order listing, uploads, and S3/CloudFront asset delivery. Future S3
   permissions remain pending implementation and authorization.
 - Configure deployment-specific values, including allowed frontend CORS origins.
 - Coordinate frontend adoption of the agreed Bearer header; current code sends
@@ -419,4 +428,5 @@ Lightweight local validation on 2026-09-14, after implementing admin writes:
 - Verify newly implemented operations through the deployed API using curl,
   Postman, or an equivalent HTTP client.
 
-No live AWS inspection or deployment was performed for this Checkout implementation.
+This documentation update records user-reported deployment and testing results;
+no AWS calls, deployment, or additional tests were performed by the agent.
