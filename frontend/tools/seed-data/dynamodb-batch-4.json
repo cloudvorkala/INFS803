@@ -1,0 +1,979 @@
+{
+  "Paperbound-Products": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-076"
+          },
+          "title": {
+            "S": "The Instrument Maker"
+          },
+          "author": {
+            "S": "Lucia Ferrante"
+          },
+          "category": {
+            "S": "Biography"
+          },
+          "price": {
+            "N": "36"
+          },
+          "stock": {
+            "N": "12"
+          },
+          "isbn": {
+            "S": "978-1-5452-2125-9"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-076.svg"
+          },
+          "description": {
+            "S": "A life of the woman who built the telescopes three Nobel laureates used."
+          },
+          "searchText": {
+            "S": "the instrument maker lucia ferrante 978-1-5452-2125-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-077"
+          },
+          "title": {
+            "S": "Second Chair"
+          },
+          "author": {
+            "S": "Lucia Ferrante"
+          },
+          "category": {
+            "S": "Biography"
+          },
+          "price": {
+            "N": "38.5"
+          },
+          "stock": {
+            "N": "8"
+          },
+          "isbn": {
+            "S": "978-1-7037-3644-1"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-077.svg"
+          },
+          "description": {
+            "S": "The orchestral musicians nobody names, and the careers they built anyway."
+          },
+          "searchText": {
+            "S": "second chair lucia ferrante 978-1-7037-3644-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-078"
+          },
+          "title": {
+            "S": "A Life in Margins"
+          },
+          "author": {
+            "S": "Oskar Lindeman"
+          },
+          "category": {
+            "S": "Biography"
+          },
+          "price": {
+            "N": "34.5"
+          },
+          "stock": {
+            "N": "15"
+          },
+          "isbn": {
+            "S": "978-1-4173-7519-6"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-078.svg"
+          },
+          "description": {
+            "S": "The editor who shaped a century of fiction and published nothing under his own name."
+          },
+          "searchText": {
+            "S": "a life in margins oskar lindeman 978-1-4173-7519-6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-079"
+          },
+          "title": {
+            "S": "The Reluctant Cartographer"
+          },
+          "author": {
+            "S": "Oskar Lindeman"
+          },
+          "category": {
+            "S": "Biography"
+          },
+          "price": {
+            "N": "37"
+          },
+          "stock": {
+            "N": "9"
+          },
+          "isbn": {
+            "S": "978-1-4427-8078-1"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-079.svg"
+          },
+          "description": {
+            "S": "A surveyor who mapped a border he spent the rest of his life arguing against."
+          },
+          "searchText": {
+            "S": "the reluctant cartographer oskar lindeman 978-1-4427-8078-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-080"
+          },
+          "title": {
+            "S": "Hands"
+          },
+          "author": {
+            "S": "Amara Nkemdirim"
+          },
+          "category": {
+            "S": "Biography"
+          },
+          "price": {
+            "N": "33"
+          },
+          "stock": {
+            "N": "13"
+          },
+          "isbn": {
+            "S": "978-1-5457-2792-8"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-080.svg"
+          },
+          "description": {
+            "S": "Six lives told entirely through what their hands did for a living."
+          },
+          "searchText": {
+            "S": "hands amara nkemdirim 978-1-5457-2792-8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-081"
+          },
+          "title": {
+            "S": "The Understudied Life"
+          },
+          "author": {
+            "S": "Amara Nkemdirim"
+          },
+          "category": {
+            "S": "Biography"
+          },
+          "price": {
+            "N": "31.5"
+          },
+          "stock": {
+            "N": "17"
+          },
+          "isbn": {
+            "S": "978-1-4963-6265-0"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-081.svg"
+          },
+          "description": {
+            "S": "A biography of a woman who appears in three footnotes and no index."
+          },
+          "searchText": {
+            "S": "the understudied life amara nkemdirim 978-1-4963-6265-0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-082"
+          },
+          "title": {
+            "S": "Correspondence"
+          },
+          "author": {
+            "S": "Ivan Petrov"
+          },
+          "category": {
+            "S": "Biography"
+          },
+          "price": {
+            "N": "39"
+          },
+          "stock": {
+            "N": "11"
+          },
+          "isbn": {
+            "S": "978-1-1836-9781-2"
+          },
+          "publishedYear": {
+            "N": "2019"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-082.svg"
+          },
+          "description": {
+            "S": "Two scientists, forty years of letters, and one argument they never resolved."
+          },
+          "searchText": {
+            "S": "correspondence ivan petrov 978-1-1836-9781-2"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-083"
+          },
+          "title": {
+            "S": "The Long Apprenticeship"
+          },
+          "author": {
+            "S": "Ivan Petrov"
+          },
+          "category": {
+            "S": "Biography"
+          },
+          "price": {
+            "N": "41"
+          },
+          "stock": {
+            "N": "6"
+          },
+          "isbn": {
+            "S": "978-1-2176-7302-7"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-083.svg"
+          },
+          "description": {
+            "S": "Mastery, told through eleven people who took decades to get good."
+          },
+          "searchText": {
+            "S": "the long apprenticeship ivan petrov 978-1-2176-7302-7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-084"
+          },
+          "title": {
+            "S": "Stagehand"
+          },
+          "author": {
+            "S": "Bridget Ó Muirí"
+          },
+          "category": {
+            "S": "Biography"
+          },
+          "price": {
+            "N": "30"
+          },
+          "stock": {
+            "N": "19"
+          },
+          "isbn": {
+            "S": "978-1-5643-1098-9"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-084.svg"
+          },
+          "description": {
+            "S": "Fifty years backstage at one theatre, and everything that happened out of the light."
+          },
+          "searchText": {
+            "S": "stagehand bridget ó muirí 978-1-5643-1098-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-085"
+          },
+          "title": {
+            "S": "The Keeper of Records"
+          },
+          "author": {
+            "S": "Bridget Ó Muirí"
+          },
+          "category": {
+            "S": "Biography"
+          },
+          "price": {
+            "N": "28.5"
+          },
+          "stock": {
+            "N": "21"
+          },
+          "isbn": {
+            "S": "978-1-3792-1563-9"
+          },
+          "publishedYear": {
+            "N": "2018"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-085.svg"
+          },
+          "description": {
+            "S": "A parish registrar whose careful handwriting outlasted every institution she served."
+          },
+          "searchText": {
+            "S": "the keeper of records bridget ó muirí 978-1-3792-1563-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-086"
+          },
+          "title": {
+            "S": "The Grid and the Gutter"
+          },
+          "author": {
+            "S": "Johannes Weiss"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "55"
+          },
+          "stock": {
+            "N": "10"
+          },
+          "isbn": {
+            "S": "978-1-0825-7423-8"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-086.svg"
+          },
+          "description": {
+            "S": "Swiss typography’s long argument with itself, told through fifty spreads."
+          },
+          "searchText": {
+            "S": "the grid and the gutter johannes weiss 978-1-0825-7423-8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-087"
+          },
+          "title": {
+            "S": "Colour Before Chemistry"
+          },
+          "author": {
+            "S": "Johannes Weiss"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "62"
+          },
+          "stock": {
+            "N": "7"
+          },
+          "isbn": {
+            "S": "978-1-5043-2257-7"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-087.svg"
+          },
+          "description": {
+            "S": "Where pigment came from before it came from a factory."
+          },
+          "searchText": {
+            "S": "colour before chemistry johannes weiss 978-1-5043-2257-7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-088"
+          },
+          "title": {
+            "S": "Bindings"
+          },
+          "author": {
+            "S": "Estelle Faure"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "58.5"
+          },
+          "stock": {
+            "N": "9"
+          },
+          "isbn": {
+            "S": "978-1-1692-4239-5"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-088.svg"
+          },
+          "description": {
+            "S": "Six centuries of bookbinding as structural engineering and as argument."
+          },
+          "searchText": {
+            "S": "bindings estelle faure 978-1-1692-4239-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-089"
+          },
+          "title": {
+            "S": "The Marginal Hand"
+          },
+          "author": {
+            "S": "Estelle Faure"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "49"
+          },
+          "stock": {
+            "N": "14"
+          },
+          "isbn": {
+            "S": "978-1-2007-7257-7"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-089.svg"
+          },
+          "description": {
+            "S": "Doodles, corrections, and glosses: what readers did to the books they owned."
+          },
+          "searchText": {
+            "S": "the marginal hand estelle faure 978-1-2007-7257-7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-090"
+          },
+          "title": {
+            "S": "Shop Fronts"
+          },
+          "author": {
+            "S": "Nadia Rahman"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "47.5"
+          },
+          "stock": {
+            "N": "11"
+          },
+          "isbn": {
+            "S": "978-1-1851-7200-3"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-090.svg"
+          },
+          "description": {
+            "S": "Vernacular signage from twelve cities, photographed before it disappears."
+          },
+          "searchText": {
+            "S": "shop fronts nadia rahman 978-1-1851-7200-3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-091"
+          },
+          "title": {
+            "S": "The Chair Problem"
+          },
+          "author": {
+            "S": "Nadia Rahman"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "52.5"
+          },
+          "stock": {
+            "N": "8"
+          },
+          "isbn": {
+            "S": "978-1-8075-4165-1"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-091.svg"
+          },
+          "description": {
+            "S": "Why the most designed object in the world is still uncomfortable."
+          },
+          "searchText": {
+            "S": "the chair problem nadia rahman 978-1-8075-4165-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-092"
+          },
+          "title": {
+            "S": "Blueprint and Bodge"
+          },
+          "author": {
+            "S": "Rory Sandeman"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "44"
+          },
+          "stock": {
+            "N": "16"
+          },
+          "isbn": {
+            "S": "978-1-6690-6221-9"
+          },
+          "publishedYear": {
+            "N": "2019"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-092.svg"
+          },
+          "description": {
+            "S": "The gap between what architects drew and what builders actually did."
+          },
+          "searchText": {
+            "S": "blueprint and bodge rory sandeman 978-1-6690-6221-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-093"
+          },
+          "title": {
+            "S": "Ornament Returns"
+          },
+          "author": {
+            "S": "Rory Sandeman"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "59"
+          },
+          "stock": {
+            "N": "5"
+          },
+          "isbn": {
+            "S": "978-1-3722-4407-0"
+          },
+          "publishedYear": {
+            "N": "2026"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-093.svg"
+          },
+          "description": {
+            "S": "A century after it was declared a crime, decoration is back. Sandeman asks what changed."
+          },
+          "searchText": {
+            "S": "ornament returns rory sandeman 978-1-3722-4407-0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-094"
+          },
+          "title": {
+            "S": "The Reading Room"
+          },
+          "author": {
+            "S": "Wilhelmina Achterberg"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "54"
+          },
+          "stock": {
+            "N": "12"
+          },
+          "isbn": {
+            "S": "978-1-0707-5421-5"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-094.svg"
+          },
+          "description": {
+            "S": "Library architecture and the century-long question of how to house silence."
+          },
+          "searchText": {
+            "S": "the reading room wilhelmina achterberg 978-1-0707-5421-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-095"
+          },
+          "title": {
+            "S": "Paper, Ink, Pressure"
+          },
+          "author": {
+            "S": "Wilhelmina Achterberg"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "51"
+          },
+          "stock": {
+            "N": "13"
+          },
+          "isbn": {
+            "S": "978-1-7835-4498-1"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-095.svg"
+          },
+          "description": {
+            "S": "Letterpress as a set of physical constraints that produced a visual language."
+          },
+          "searchText": {
+            "S": "paper, ink, pressure wilhelmina achterberg 978-1-7835-4498-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-096"
+          },
+          "title": {
+            "S": "Everything Is a Poster"
+          },
+          "author": {
+            "S": "Kofi Mensah"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "46.5"
+          },
+          "stock": {
+            "N": "15"
+          },
+          "isbn": {
+            "S": "978-1-4652-7048-1"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-096.svg"
+          },
+          "description": {
+            "S": "Protest, promotion, and propaganda in one hundred sheets of paper."
+          },
+          "searchText": {
+            "S": "everything is a poster kofi mensah 978-1-4652-7048-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-097"
+          },
+          "title": {
+            "S": "The Second Draft"
+          },
+          "author": {
+            "S": "Kofi Mensah"
+          },
+          "category": {
+            "S": "Art & Design"
+          },
+          "price": {
+            "N": "43"
+          },
+          "stock": {
+            "N": "18"
+          },
+          "isbn": {
+            "S": "978-1-0098-7340-6"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-097.svg"
+          },
+          "description": {
+            "S": "Design process from twenty studios, showing the versions nobody publishes."
+          },
+          "searchText": {
+            "S": "the second draft kofi mensah 978-1-0098-7340-6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-098"
+          },
+          "title": {
+            "S": "The Frost Line"
+          },
+          "author": {
+            "S": "Ada Fenwick"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "26.5"
+          },
+          "stock": {
+            "N": "0"
+          },
+          "isbn": {
+            "S": "978-1-3177-1948-9"
+          },
+          "publishedYear": {
+            "N": "2026"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-098.svg"
+          },
+          "description": {
+            "S": "A border town where the boundary moves each winter, and the paperwork never keeps up."
+          },
+          "searchText": {
+            "S": "the frost line ada fenwick 978-1-3177-1948-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-099"
+          },
+          "title": {
+            "S": "Tidal Mathematics"
+          },
+          "author": {
+            "S": "Ezra Kohn"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "37.5"
+          },
+          "stock": {
+            "N": "10"
+          },
+          "isbn": {
+            "S": "978-1-1591-0849-6"
+          },
+          "publishedYear": {
+            "N": "2026"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-099.svg"
+          },
+          "description": {
+            "S": "Predicting the sea: two thousand years of getting it almost right."
+          },
+          "searchText": {
+            "S": "tidal mathematics ezra kohn 978-1-1591-0849-6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-100"
+          },
+          "title": {
+            "S": "Systems That Outlive You"
+          },
+          "author": {
+            "S": "Kenji Watanabe"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "72"
+          },
+          "stock": {
+            "N": "7"
+          },
+          "isbn": {
+            "S": "978-1-5864-8691-4"
+          },
+          "publishedYear": {
+            "N": "2026"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-100.svg"
+          },
+          "description": {
+            "S": "Writing software on the assumption that someone else will maintain it for a decade."
+          },
+          "searchText": {
+            "S": "systems that outlive you kenji watanabe 978-1-5864-8691-4"
+          }
+        }
+      }
+    }
+  ]
+}

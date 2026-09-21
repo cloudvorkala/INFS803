@@ -1,0 +1,90 @@
+.cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  background: var(--surface-alt);
+  box-shadow: var(--shadow-sm);
+}
+
+.placeholder {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 1.2rem 1rem 2.6rem 1.4rem;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* Darker strip down the left edge reads as a spine. */
+.spine {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 8px;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+/* Foil rule above the author, matching the generated covers. */
+.rule {
+  position: absolute;
+  left: 50%;
+  bottom: 2.1rem;
+  width: 34px;
+  height: 1px;
+  transform: translateX(-50%);
+  background: var(--foil-stamp, #c9a15a);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.author {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.9rem;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--foil-stamp, #c9a15a);
+}
+
+.sm .title { font-size: 0.82rem; }
+.sm.placeholder { padding: 0.9rem 0.7rem 2.2rem 1.1rem; }
+
+.lg .title { font-size: 1.5rem; }
+.lg .author { font-size: 0.74rem; bottom: 1.4rem; }
+.lg .rule { bottom: 3rem; width: 48px; }
+.lg.placeholder { padding: 2rem 1.6rem 4rem 2.2rem; }
+
+/* Table thumbnails are too small for legible text — colour and spine only. */
+.xs {
+  border-radius: 2px;
+}
+
+.xs .title,
+.xs .author,
+.xs .rule {
+  display: none;
+}
+
+.xs .spine {
+  width: 4px;
+}

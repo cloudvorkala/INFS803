@@ -1,0 +1,979 @@
+{
+  "Paperbound-Products": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-001"
+          },
+          "title": {
+            "S": "The Salt Path Home"
+          },
+          "author": {
+            "S": "Marguerite Ellery"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "24.99"
+          },
+          "stock": {
+            "N": "12"
+          },
+          "isbn": {
+            "S": "978-1-2794-8866-9"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-001.svg"
+          },
+          "description": {
+            "S": "A family returns to the coastal town they swore they had left for good; Ellery writes tides the way others write memory."
+          },
+          "searchText": {
+            "S": "the salt path home marguerite ellery 978-1-2794-8866-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-002"
+          },
+          "title": {
+            "S": "The Cartographer’s Daughter"
+          },
+          "author": {
+            "S": "Marguerite Ellery"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "22.99"
+          },
+          "stock": {
+            "N": "18"
+          },
+          "isbn": {
+            "S": "978-1-6989-6151-4"
+          },
+          "publishedYear": {
+            "N": "2018"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-002.svg"
+          },
+          "description": {
+            "S": "A girl inherits her father’s unfinished atlas and spends a decade deciding whether to complete it."
+          },
+          "searchText": {
+            "S": "the cartographer’s daughter marguerite ellery 978-1-6989-6151-4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-003"
+          },
+          "title": {
+            "S": "Weatherhouse"
+          },
+          "author": {
+            "S": "Marguerite Ellery"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "27.5"
+          },
+          "stock": {
+            "N": "9"
+          },
+          "isbn": {
+            "S": "978-1-5152-0356-8"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-003.svg"
+          },
+          "description": {
+            "S": "Three generations of women keep a lighthouse that has not been lit in forty years."
+          },
+          "searchText": {
+            "S": "weatherhouse marguerite ellery 978-1-5152-0356-8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-004"
+          },
+          "title": {
+            "S": "A Grammar of Silence"
+          },
+          "author": {
+            "S": "Yusuf Karim"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "27.5"
+          },
+          "stock": {
+            "N": "0"
+          },
+          "isbn": {
+            "S": "978-1-3099-2192-0"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-004.svg"
+          },
+          "description": {
+            "S": "A translator loses the ability to speak and begins a notebook of everything she cannot say."
+          },
+          "searchText": {
+            "S": "a grammar of silence yusuf karim 978-1-3099-2192-0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-005"
+          },
+          "title": {
+            "S": "The Quiet Instrument"
+          },
+          "author": {
+            "S": "Hélène Marceau"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "26"
+          },
+          "stock": {
+            "N": "6"
+          },
+          "isbn": {
+            "S": "978-1-1388-7110-6"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-005.svg"
+          },
+          "description": {
+            "S": "A luthier takes a final commission from a client who will not explain what the instrument is for."
+          },
+          "searchText": {
+            "S": "the quiet instrument hélène marceau 978-1-1388-7110-6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-006"
+          },
+          "title": {
+            "S": "Bright Interval"
+          },
+          "author": {
+            "S": "Hélène Marceau"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "23.5"
+          },
+          "stock": {
+            "N": "14"
+          },
+          "isbn": {
+            "S": "978-1-0619-5270-5"
+          },
+          "publishedYear": {
+            "N": "2019"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-006.svg"
+          },
+          "description": {
+            "S": "Two strangers share a train compartment across a country neither of them can name."
+          },
+          "searchText": {
+            "S": "bright interval hélène marceau 978-1-0619-5270-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-007"
+          },
+          "title": {
+            "S": "The Wintering"
+          },
+          "author": {
+            "S": "Ada Fenwick"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "25"
+          },
+          "stock": {
+            "N": "11"
+          },
+          "isbn": {
+            "S": "978-1-6967-7082-8"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-007.svg"
+          },
+          "description": {
+            "S": "A novel about the year a village agreed, without discussing it, to stop speaking to one another."
+          },
+          "searchText": {
+            "S": "the wintering ada fenwick 978-1-6967-7082-8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-008"
+          },
+          "title": {
+            "S": "Small Mercies of the Tide"
+          },
+          "author": {
+            "S": "Ada Fenwick"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "21.99"
+          },
+          "stock": {
+            "N": "16"
+          },
+          "isbn": {
+            "S": "978-1-5040-8353-9"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-008.svg"
+          },
+          "description": {
+            "S": "Fenwick’s breakthrough: a fishing town, a drowned boy, and forty years of careful silence."
+          },
+          "searchText": {
+            "S": "small mercies of the tide ada fenwick 978-1-5040-8353-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-009"
+          },
+          "title": {
+            "S": "The Lantern Keeper"
+          },
+          "author": {
+            "S": "Josiah Bell"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "19.99"
+          },
+          "stock": {
+            "N": "21"
+          },
+          "isbn": {
+            "S": "978-1-7978-8119-5"
+          },
+          "publishedYear": {
+            "N": "2017"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-009.svg"
+          },
+          "description": {
+            "S": "A man walks the same six miles of coast every night for thirty years, and one night finds company."
+          },
+          "searchText": {
+            "S": "the lantern keeper josiah bell 978-1-7978-8119-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-010"
+          },
+          "title": {
+            "S": "Nine Kinds of Leaving"
+          },
+          "author": {
+            "S": "Josiah Bell"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "24.5"
+          },
+          "stock": {
+            "N": "8"
+          },
+          "isbn": {
+            "S": "978-1-3126-0968-6"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-010.svg"
+          },
+          "description": {
+            "S": "Nine linked stories, each one a departure, each one from a different side of the door."
+          },
+          "searchText": {
+            "S": "nine kinds of leaving josiah bell 978-1-3126-0968-6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-011"
+          },
+          "title": {
+            "S": "The Orchard at Dusk"
+          },
+          "author": {
+            "S": "Priya Anand"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "28"
+          },
+          "stock": {
+            "N": "13"
+          },
+          "isbn": {
+            "S": "978-1-3855-5186-8"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-011.svg"
+          },
+          "description": {
+            "S": "An inheritance dispute over an orchard becomes an argument about what a family owes its dead."
+          },
+          "searchText": {
+            "S": "the orchard at dusk priya anand 978-1-3855-5186-8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-012"
+          },
+          "title": {
+            "S": "Paper Cities"
+          },
+          "author": {
+            "S": "Priya Anand"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "25.5"
+          },
+          "stock": {
+            "N": "7"
+          },
+          "isbn": {
+            "S": "978-1-1829-0832-2"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-012.svg"
+          },
+          "description": {
+            "S": "An architect designs buildings that are never built and begins to prefer them that way."
+          },
+          "searchText": {
+            "S": "paper cities priya anand 978-1-1829-0832-2"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-013"
+          },
+          "title": {
+            "S": "The Long Sunday"
+          },
+          "author": {
+            "S": "Tomas Bergqvist"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "18.99"
+          },
+          "stock": {
+            "N": "24"
+          },
+          "isbn": {
+            "S": "978-1-7572-6161-6"
+          },
+          "publishedYear": {
+            "N": "2016"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-013.svg"
+          },
+          "description": {
+            "S": "One day in a small Swedish town, told sixteen times from sixteen windows."
+          },
+          "searchText": {
+            "S": "the long sunday tomas bergqvist 978-1-7572-6161-6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-014"
+          },
+          "title": {
+            "S": "Harbour Light"
+          },
+          "author": {
+            "S": "Nuala Devine"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "24"
+          },
+          "stock": {
+            "N": "15"
+          },
+          "isbn": {
+            "S": "978-1-1190-9912-3"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-014.svg"
+          },
+          "description": {
+            "S": "A harbourmaster’s logbook becomes an accidental record of a town’s slow disappearance."
+          },
+          "searchText": {
+            "S": "harbour light nuala devine 978-1-1190-9912-3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-015"
+          },
+          "title": {
+            "S": "The Understudy"
+          },
+          "author": {
+            "S": "Nuala Devine"
+          },
+          "category": {
+            "S": "Fiction"
+          },
+          "price": {
+            "N": "21.5"
+          },
+          "stock": {
+            "N": "19"
+          },
+          "isbn": {
+            "S": "978-1-6860-0707-1"
+          },
+          "publishedYear": {
+            "N": "2019"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-015.svg"
+          },
+          "description": {
+            "S": "She has played the second part for twenty years, and tonight the lead does not arrive."
+          },
+          "searchText": {
+            "S": "the understudy nuala devine 978-1-6860-0707-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-016"
+          },
+          "title": {
+            "S": "Cold Reading"
+          },
+          "author": {
+            "S": "Ilse Brandt"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "21.5"
+          },
+          "stock": {
+            "N": "11"
+          },
+          "isbn": {
+            "S": "978-1-8488-7814-3"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-016.svg"
+          },
+          "description": {
+            "S": "A stage mentalist helps with a missing-persons case and finds her tricks work uncomfortably well."
+          },
+          "searchText": {
+            "S": "cold reading ilse brandt 978-1-8488-7814-3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-017"
+          },
+          "title": {
+            "S": "Ledger"
+          },
+          "author": {
+            "S": "Ilse Brandt"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "23"
+          },
+          "stock": {
+            "N": "3"
+          },
+          "isbn": {
+            "S": "978-1-8818-2545-6"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-017.svg"
+          },
+          "description": {
+            "S": "A forensic accountant and a former mentalist work the same case from opposite ends."
+          },
+          "searchText": {
+            "S": "ledger ilse brandt 978-1-8818-2545-6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-018"
+          },
+          "title": {
+            "S": "The Second Witness"
+          },
+          "author": {
+            "S": "Ilse Brandt"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "20.99"
+          },
+          "stock": {
+            "N": "17"
+          },
+          "isbn": {
+            "S": "978-1-7484-6223-7"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-018.svg"
+          },
+          "description": {
+            "S": "Everyone agrees what happened. The one person who disagrees was not there."
+          },
+          "searchText": {
+            "S": "the second witness ilse brandt 978-1-7484-6223-7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-019"
+          },
+          "title": {
+            "S": "The Nightjar Papers"
+          },
+          "author": {
+            "S": "Yusuf Karim"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "24"
+          },
+          "stock": {
+            "N": "15"
+          },
+          "isbn": {
+            "S": "978-1-1978-8408-6"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-019.svg"
+          },
+          "description": {
+            "S": "A literary estate, a disputed manuscript, and an archivist who is not who she says she is."
+          },
+          "searchText": {
+            "S": "the nightjar papers yusuf karim 978-1-1978-8408-6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-020"
+          },
+          "title": {
+            "S": "A Thin Alibi"
+          },
+          "author": {
+            "S": "Gordon Achebe"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "22.5"
+          },
+          "stock": {
+            "N": "10"
+          },
+          "isbn": {
+            "S": "978-1-8319-1580-0"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-020.svg"
+          },
+          "description": {
+            "S": "The suspect has an alibi for the murder but not for the eleven minutes before it."
+          },
+          "searchText": {
+            "S": "a thin alibi gordon achebe 978-1-8319-1580-0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-021"
+          },
+          "title": {
+            "S": "The Roscoe Street Fire"
+          },
+          "author": {
+            "S": "Gordon Achebe"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "21"
+          },
+          "stock": {
+            "N": "13"
+          },
+          "isbn": {
+            "S": "978-1-8923-1199-3"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-021.svg"
+          },
+          "description": {
+            "S": "Six flats, one fire, and an insurance investigator who cannot make the timeline close."
+          },
+          "searchText": {
+            "S": "the roscoe street fire gordon achebe 978-1-8923-1199-3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-022"
+          },
+          "title": {
+            "S": "Dead Reckoning"
+          },
+          "author": {
+            "S": "Marta Silvestri"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "23.5"
+          },
+          "stock": {
+            "N": "9"
+          },
+          "isbn": {
+            "S": "978-1-1151-0271-1"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-022.svg"
+          },
+          "description": {
+            "S": "A yacht arrives in port with full sails, a set table, and nobody aboard."
+          },
+          "searchText": {
+            "S": "dead reckoning marta silvestri 978-1-1151-0271-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-023"
+          },
+          "title": {
+            "S": "The Glasshouse Murders"
+          },
+          "author": {
+            "S": "Marta Silvestri"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "19.99"
+          },
+          "stock": {
+            "N": "22"
+          },
+          "isbn": {
+            "S": "978-1-2398-3203-7"
+          },
+          "publishedYear": {
+            "N": "2019"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-023.svg"
+          },
+          "description": {
+            "S": "A botanical garden, a locked conservatory, and a detective allergic to almost everything in it."
+          },
+          "searchText": {
+            "S": "the glasshouse murders marta silvestri 978-1-2398-3203-7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-024"
+          },
+          "title": {
+            "S": "What the Porter Saw"
+          },
+          "author": {
+            "S": "Edwin Croft"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "18.5"
+          },
+          "stock": {
+            "N": "26"
+          },
+          "isbn": {
+            "S": "978-1-0200-9790-4"
+          },
+          "publishedYear": {
+            "N": "2018"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-024.svg"
+          },
+          "description": {
+            "S": "A college porter has watched forty years of comings and goings, and remembers all of them."
+          },
+          "searchText": {
+            "S": "what the porter saw edwin croft 978-1-0200-9790-4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-025"
+          },
+          "title": {
+            "S": "The Quiet Part"
+          },
+          "author": {
+            "S": "Edwin Croft"
+          },
+          "category": {
+            "S": "Mystery"
+          },
+          "price": {
+            "N": "25"
+          },
+          "stock": {
+            "N": "5"
+          },
+          "isbn": {
+            "S": "978-1-4715-7561-7"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-025.svg"
+          },
+          "description": {
+            "S": "A podcast reopens a cold case, and the host starts receiving episodes she did not record."
+          },
+          "searchText": {
+            "S": "the quiet part edwin croft 978-1-4715-7561-7"
+          }
+        }
+      }
+    }
+  ]
+}

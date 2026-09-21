@@ -1,0 +1,18 @@
+.wrap {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.title {
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+
+.message {
+  color: var(--ink-muted);
+  max-width: 46ch;
+  margin: 0 auto 1.2rem;
+}

@@ -1,0 +1,222 @@
+/* --- Hero ------------------------------------------------------------------
+   Set as a title page: eyebrow, display line, lede. Restraint on purpose — the
+   covers below are the colour on this page.
+   -------------------------------------------------------------------------- */
+
+.hero {
+  padding: 0.5rem 0 1.6rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1rem 2rem;
+}
+
+.heroEyebrow {
+  grid-column: 1 / -1;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--foil);
+  margin: 0 0 0.35rem;
+}
+
+.heroTitle {
+  font-size: clamp(1.9rem, 4.4vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.heroLede {
+  color: var(--ink-muted);
+  max-width: 40ch;
+  margin: 0;
+  font-size: 0.92rem;
+  text-align: right;
+}
+
+@media (max-width: 780px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .heroLede {
+    text-align: left;
+    max-width: 54ch;
+  }
+}
+
+/* --- Controls -------------------------------------------------------------- */
+
+.controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.searchWrap {
+  position: relative;
+  flex: 1 1 300px;
+  max-width: 460px;
+}
+
+.searchWrap input {
+  padding-left: 2.3rem;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-muted);
+  pointer-events: none;
+}
+
+.sortWrap {
+  flex: 0 0 auto;
+  width: 190px;
+}
+
+/* --- Category chips -------------------------------------------------------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 2.25rem;
+}
+
+.chip {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--ink-muted);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.84rem;
+  font-weight: 500;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.chip:hover {
+  background: var(--surface-alt);
+  color: var(--ink);
+  border-color: var(--ink-muted);
+}
+
+.chipActive,
+.chipActive:hover {
+  background: var(--cloth);
+  border-color: var(--cloth);
+  color: var(--ink-inverse);
+}
+
+/* --- Shelf ----------------------------------------------------------------- */
+
+.shelfHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 0.85rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 2px solid var(--ink);
+}
+
+.shelfTitle {
+  font-size: 1.35rem;
+  margin: 0;
+}
+
+.count {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 2rem 1.5rem;
+}
+
+/* --- Pager ----------------------------------------------------------------- */
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.pageNums {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.pageNum {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 0.4rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+
+.pageNum:hover {
+  background: var(--surface-alt);
+  color: var(--ink);
+}
+
+.pageNumActive,
+.pageNumActive:hover {
+  background: var(--cloth);
+  color: var(--ink-inverse);
+}
+
+.clearRow {
+  text-align: center;
+  margin: 1.5rem 0 0;
+}
+
+.clearLink {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.clearLink:hover {
+  color: var(--cloth);
+}
+
+@media (max-width: 560px) {
+  .sortWrap {
+    width: 100%;
+  }
+
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.5rem 1rem;
+  }
+}

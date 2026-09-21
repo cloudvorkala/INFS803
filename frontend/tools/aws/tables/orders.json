@@ -1,0 +1,17 @@
+{
+  "TableName": "Paperbound-Orders",
+  "AttributeDefinitions": [
+    { "AttributeName": "userId", "AttributeType": "S" },
+    { "AttributeName": "placedAtOrderId", "AttributeType": "S" }
+  ],
+  "KeySchema": [
+    { "AttributeName": "userId", "KeyType": "HASH" },
+    { "AttributeName": "placedAtOrderId", "KeyType": "RANGE" }
+  ],
+  "BillingMode": "PROVISIONED",
+  "ProvisionedThroughput": { "ReadCapacityUnits": 5, "WriteCapacityUnits": 5 },
+  "Tags": [
+    { "Key": "Project", "Value": "INFS803-Assignment2" },
+    { "Key": "Layer", "Value": "database" }
+  ]
+}

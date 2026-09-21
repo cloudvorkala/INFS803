@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.env.local
+.DS_Store
+*.log
+
+# AWS key pairs — never commit these
+*.pem
+tools/aws/node_modules/
+.env.cognito

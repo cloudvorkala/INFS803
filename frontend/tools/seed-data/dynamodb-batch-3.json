@@ -1,0 +1,979 @@
+{
+  "Paperbound-Products": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-051"
+          },
+          "title": {
+            "S": "Root and Branch"
+          },
+          "author": {
+            "S": "Fern Whitlock"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "31.5"
+          },
+          "stock": {
+            "N": "10"
+          },
+          "isbn": {
+            "S": "978-1-8131-9036-2"
+          },
+          "publishedYear": {
+            "N": "2019"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-051.svg"
+          },
+          "description": {
+            "S": "Mycorrhizal networks, written before the topic was fashionable and rather more careful for it."
+          },
+          "searchText": {
+            "S": "root and branch fern whitlock 978-1-8131-9036-2"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-052"
+          },
+          "title": {
+            "S": "Sleep, Interrupted"
+          },
+          "author": {
+            "S": "Dr. Naomi Sung"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "29.99"
+          },
+          "stock": {
+            "N": "22"
+          },
+          "isbn": {
+            "S": "978-1-2725-0722-0"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-052.svg"
+          },
+          "description": {
+            "S": "What sleep research shows, and where popular advice has run well ahead of the evidence."
+          },
+          "searchText": {
+            "S": "sleep, interrupted dr. naomi sung 978-1-2725-0722-0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-053"
+          },
+          "title": {
+            "S": "The Attention Economy of the Brain"
+          },
+          "author": {
+            "S": "Dr. Naomi Sung"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "33.5"
+          },
+          "stock": {
+            "N": "9"
+          },
+          "isbn": {
+            "S": "978-1-0074-3799-0"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-053.svg"
+          },
+          "description": {
+            "S": "Sung on what neuroscience can and cannot say about distraction."
+          },
+          "searchText": {
+            "S": "the attention economy of the brain dr. naomi sung 978-1-0074-3799-0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-054"
+          },
+          "title": {
+            "S": "Deep Time, Shallow Water"
+          },
+          "author": {
+            "S": "Ezra Kohn"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "36"
+          },
+          "stock": {
+            "N": "13"
+          },
+          "isbn": {
+            "S": "978-1-5244-2766-5"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-054.svg"
+          },
+          "description": {
+            "S": "Reading four billion years out of a single tidal flat."
+          },
+          "searchText": {
+            "S": "deep time, shallow water ezra kohn 978-1-5244-2766-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-055"
+          },
+          "title": {
+            "S": "The Isotope Diaries"
+          },
+          "author": {
+            "S": "Ezra Kohn"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "38.5"
+          },
+          "stock": {
+            "N": "7"
+          },
+          "isbn": {
+            "S": "978-1-2009-0613-2"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-055.svg"
+          },
+          "description": {
+            "S": "How trace atoms date bones, catch forgers, and settle arguments."
+          },
+          "searchText": {
+            "S": "the isotope diaries ezra kohn 978-1-2009-0613-2"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-056"
+          },
+          "title": {
+            "S": "Swarm"
+          },
+          "author": {
+            "S": "Ingrid Halvorsen"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "30"
+          },
+          "stock": {
+            "N": "18"
+          },
+          "isbn": {
+            "S": "978-1-5992-8902-1"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-056.svg"
+          },
+          "description": {
+            "S": "Collective behaviour from starlings to traffic, and why the maths keeps rhyming."
+          },
+          "searchText": {
+            "S": "swarm ingrid halvorsen 978-1-5992-8902-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-057"
+          },
+          "title": {
+            "S": "The Cold Chain"
+          },
+          "author": {
+            "S": "Ingrid Halvorsen"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "32.5"
+          },
+          "stock": {
+            "N": "11"
+          },
+          "isbn": {
+            "S": "978-1-8614-5742-4"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-057.svg"
+          },
+          "description": {
+            "S": "Refrigeration as the invisible infrastructure holding modern medicine together."
+          },
+          "searchText": {
+            "S": "the cold chain ingrid halvorsen 978-1-8614-5742-4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-058"
+          },
+          "title": {
+            "S": "Antifragile Bones"
+          },
+          "author": {
+            "S": "Marcus Oyelaran"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "31"
+          },
+          "stock": {
+            "N": "15"
+          },
+          "isbn": {
+            "S": "978-1-1287-7033-4"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-058.svg"
+          },
+          "description": {
+            "S": "Why bone is a living material, and what engineers keep learning from it."
+          },
+          "searchText": {
+            "S": "antifragile bones marcus oyelaran 978-1-1287-7033-4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-059"
+          },
+          "title": {
+            "S": "The Silent Spectrum"
+          },
+          "author": {
+            "S": "Marcus Oyelaran"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "35"
+          },
+          "stock": {
+            "N": "6"
+          },
+          "isbn": {
+            "S": "978-1-2346-0460-8"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-059.svg"
+          },
+          "description": {
+            "S": "Everything the eye cannot see, and the instruments built to see it anyway."
+          },
+          "searchText": {
+            "S": "the silent spectrum marcus oyelaran 978-1-2346-0460-8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-060"
+          },
+          "title": {
+            "S": "Weather Machines"
+          },
+          "author": {
+            "S": "Clara Dubois"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "28.5"
+          },
+          "stock": {
+            "N": "20"
+          },
+          "isbn": {
+            "S": "978-1-2993-0317-1"
+          },
+          "publishedYear": {
+            "N": "2019"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-060.svg"
+          },
+          "description": {
+            "S": "Forecasting from folklore to supercomputing, and the limits that will not move."
+          },
+          "searchText": {
+            "S": "weather machines clara dubois 978-1-2993-0317-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-061"
+          },
+          "title": {
+            "S": "The Origin of Salt"
+          },
+          "author": {
+            "S": "Clara Dubois"
+          },
+          "category": {
+            "S": "Science"
+          },
+          "price": {
+            "N": "33"
+          },
+          "stock": {
+            "N": "12"
+          },
+          "isbn": {
+            "S": "978-1-0857-3365-6"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-061.svg"
+          },
+          "description": {
+            "S": "Oceans, cells, and the chemistry that made both possible."
+          },
+          "searchText": {
+            "S": "the origin of salt clara dubois 978-1-0857-3365-6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-062"
+          },
+          "title": {
+            "S": "Concurrency in Practice"
+          },
+          "author": {
+            "S": "Devan Roy"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "68.5"
+          },
+          "stock": {
+            "N": "7"
+          },
+          "isbn": {
+            "S": "978-1-0791-4389-8"
+          },
+          "publishedYear": {
+            "N": "2019"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-062.svg"
+          },
+          "description": {
+            "S": "Threads, locks, and the failure modes that only appear under load. Heavy on worked examples."
+          },
+          "searchText": {
+            "S": "concurrency in practice devan roy 978-1-0791-4389-8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-063"
+          },
+          "title": {
+            "S": "What the Machine Wants"
+          },
+          "author": {
+            "S": "Devan Roy"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "45"
+          },
+          "stock": {
+            "N": "16"
+          },
+          "isbn": {
+            "S": "978-1-1884-3370-5"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-063.svg"
+          },
+          "description": {
+            "S": "Essays on designing software honest about its own limits. Roy’s most argumentative book."
+          },
+          "searchText": {
+            "S": "what the machine wants devan roy 978-1-1884-3370-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-064"
+          },
+          "title": {
+            "S": "The Debugging Mind"
+          },
+          "author": {
+            "S": "Devan Roy"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "52"
+          },
+          "stock": {
+            "N": "10"
+          },
+          "isbn": {
+            "S": "978-1-8935-6576-0"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-064.svg"
+          },
+          "description": {
+            "S": "Not tools but method: how good engineers form and kill hypotheses."
+          },
+          "searchText": {
+            "S": "the debugging mind devan roy 978-1-8935-6576-0"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-065"
+          },
+          "title": {
+            "S": "Distributed Systems for the Impatient"
+          },
+          "author": {
+            "S": "Priya Raghavan"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "74"
+          },
+          "stock": {
+            "N": "9"
+          },
+          "isbn": {
+            "S": "978-1-4920-5178-7"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-065.svg"
+          },
+          "description": {
+            "S": "Consensus, replication, and partition tolerance without the proofs."
+          },
+          "searchText": {
+            "S": "distributed systems for the impatient priya raghavan 978-1-4920-5178-7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-066"
+          },
+          "title": {
+            "S": "Cloud Native Patterns in Anger"
+          },
+          "author": {
+            "S": "Priya Raghavan"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "79.95"
+          },
+          "stock": {
+            "N": "4"
+          },
+          "isbn": {
+            "S": "978-1-5838-5664-2"
+          },
+          "publishedYear": {
+            "N": "2026"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-066.svg"
+          },
+          "description": {
+            "S": "What breaks when the reference architecture meets a real budget and a real deadline."
+          },
+          "searchText": {
+            "S": "cloud native patterns in anger priya raghavan 978-1-5838-5664-2"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-067"
+          },
+          "title": {
+            "S": "The Cost of Abstraction"
+          },
+          "author": {
+            "S": "Priya Raghavan"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "66"
+          },
+          "stock": {
+            "N": "12"
+          },
+          "isbn": {
+            "S": "978-1-3163-8290-5"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-067.svg"
+          },
+          "description": {
+            "S": "Every layer you add buys something and charges for it. Raghavan itemises the bill."
+          },
+          "searchText": {
+            "S": "the cost of abstraction priya raghavan 978-1-3163-8290-5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-068"
+          },
+          "title": {
+            "S": "Designing Data Boundaries"
+          },
+          "author": {
+            "S": "Kenji Watanabe"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "71.5"
+          },
+          "stock": {
+            "N": "8"
+          },
+          "isbn": {
+            "S": "978-1-2494-7919-2"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-068.svg"
+          },
+          "description": {
+            "S": "Where to draw the lines between services, and how to move them later."
+          },
+          "searchText": {
+            "S": "designing data boundaries kenji watanabe 978-1-2494-7919-2"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-069"
+          },
+          "title": {
+            "S": "Observability Without Tears"
+          },
+          "author": {
+            "S": "Kenji Watanabe"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "69"
+          },
+          "stock": {
+            "N": "11"
+          },
+          "isbn": {
+            "S": "978-1-1180-5970-8"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-069.svg"
+          },
+          "description": {
+            "S": "Logs, metrics, traces: what to collect and, more usefully, what to ignore."
+          },
+          "searchText": {
+            "S": "observability without tears kenji watanabe 978-1-1180-5970-8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-070"
+          },
+          "title": {
+            "S": "The Small Web"
+          },
+          "author": {
+            "S": "Marisol Vega"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "42"
+          },
+          "stock": {
+            "N": "17"
+          },
+          "isbn": {
+            "S": "978-1-6870-7932-9"
+          },
+          "publishedYear": {
+            "N": "2024"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-070.svg"
+          },
+          "description": {
+            "S": "A case for software built by two people for two hundred, not by two hundred for two million."
+          },
+          "searchText": {
+            "S": "the small web marisol vega 978-1-6870-7932-9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-071"
+          },
+          "title": {
+            "S": "Interface Debt"
+          },
+          "author": {
+            "S": "Marisol Vega"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "48.5"
+          },
+          "stock": {
+            "N": "13"
+          },
+          "isbn": {
+            "S": "978-1-5946-7843-1"
+          },
+          "publishedYear": {
+            "N": "2021"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-071.svg"
+          },
+          "description": {
+            "S": "The compounding cost of every UI decision nobody wanted to revisit."
+          },
+          "searchText": {
+            "S": "interface debt marisol vega 978-1-5946-7843-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-072"
+          },
+          "title": {
+            "S": "Type Systems for Working Programmers"
+          },
+          "author": {
+            "S": "Anders Krogh"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "76"
+          },
+          "stock": {
+            "N": "6"
+          },
+          "isbn": {
+            "S": "978-1-0777-0230-1"
+          },
+          "publishedYear": {
+            "N": "2020"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-072.svg"
+          },
+          "description": {
+            "S": "Practical type theory for people shipping code, not writing papers about it."
+          },
+          "searchText": {
+            "S": "type systems for working programmers anders krogh 978-1-0777-0230-1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-073"
+          },
+          "title": {
+            "S": "The Migration"
+          },
+          "author": {
+            "S": "Anders Krogh"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "58"
+          },
+          "stock": {
+            "N": "9"
+          },
+          "isbn": {
+            "S": "978-1-1322-0311-8"
+          },
+          "publishedYear": {
+            "N": "2023"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-073.svg"
+          },
+          "description": {
+            "S": "Six real platform migrations, including the two that failed and why."
+          },
+          "searchText": {
+            "S": "the migration anders krogh 978-1-1322-0311-8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-074"
+          },
+          "title": {
+            "S": "Rate Limits"
+          },
+          "author": {
+            "S": "Ola Adeyemi"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "54.5"
+          },
+          "stock": {
+            "N": "14"
+          },
+          "isbn": {
+            "S": "978-1-1601-5815-2"
+          },
+          "publishedYear": {
+            "N": "2025"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-074.svg"
+          },
+          "description": {
+            "S": "Backpressure, queues, and the arithmetic of saying no gracefully."
+          },
+          "searchText": {
+            "S": "rate limits ola adeyemi 978-1-1601-5815-2"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bk-075"
+          },
+          "title": {
+            "S": "Schema Evolution"
+          },
+          "author": {
+            "S": "Ola Adeyemi"
+          },
+          "category": {
+            "S": "Technology"
+          },
+          "price": {
+            "N": "62"
+          },
+          "stock": {
+            "N": "10"
+          },
+          "isbn": {
+            "S": "978-1-2861-1548-0"
+          },
+          "publishedYear": {
+            "N": "2022"
+          },
+          "coverUrl": {
+            "S": "/covers/bk-075.svg"
+          },
+          "description": {
+            "S": "How to change the shape of data that thousands of clients already depend on."
+          },
+          "searchText": {
+            "S": "schema evolution ola adeyemi 978-1-2861-1548-0"
+          }
+        }
+      }
+    }
+  ]
+}

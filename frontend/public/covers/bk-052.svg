@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600" role="img" aria-label="Sleep, Interrupted by Dr. Naomi Sung">
+  <rect width="400" height="600" fill="#6E2733"/>
+  <rect x="0" y="0" width="10" height="600" fill="#000" opacity="0.22"/>
+  <rect x="0" y="372" width="400" height="228" fill="#D9AE7A" opacity="0.13"/>
+  <line x1="0" y1="372" x2="400" y2="372" stroke="#D9AE7A" stroke-width="2"/>
+  <text font-family="Georgia,'Times New Roman',serif" font-size="40" fill="#F5E6E2" text-anchor="middle" letter-spacing="1"><tspan x="200" y="195">SLEEP,</tspan><tspan x="200" y="243">INTERRUPTED</tspan></text>
+  <line x1="166" y1="512" x2="234" y2="512" stroke="#D9AE7A" stroke-width="1"/>
+  <text x="200" y="540" font-family="'Helvetica Neue',Arial,sans-serif" font-size="15" fill="#D9AE7A" text-anchor="middle" letter-spacing="3.5">SUNG</text>
+</svg>

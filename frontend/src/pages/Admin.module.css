@@ -1,0 +1,90 @@
+.layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.75rem;
+  align-items: start;
+}
+
+.editingId {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  margin-top: -0.4rem;
+  margin-bottom: 1rem;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+.formActions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.coverPreview {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.7rem;
+  margin-top: 0.7rem;
+}
+
+.coverPreview img {
+  width: 62px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.listHeading {
+  font-size: 1.1rem;
+  margin-bottom: 0.9rem;
+}
+
+.titleCell {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.thumb {
+  width: 34px;
+  flex-shrink: 0;
+}
+
+.rowTitle {
+  display: block;
+  font-weight: 600;
+}
+
+.rowAuthor {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+}
+
+.zeroStock {
+  color: var(--bad);
+  font-weight: 700;
+}
+
+.confirmRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+
+.confirmText {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

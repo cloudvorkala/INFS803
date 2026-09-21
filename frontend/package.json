@@ -1,0 +1,32 @@
+{
+  "name": "bookstore-frontend",
+  "private": true,
+  "version": "1.1.0",
+  "type": "module",
+  "description": "INFS803 Assignment 2 (Option B) - React client layer for a cloud-hosted online bookstore",
+  "scripts": {
+    "dev": "vite",
+    "build": "node scripts/check-env.mjs && vite build && node scripts/post-build.mjs",
+    "build:demo": "node scripts/check-env.mjs --allow-mock && vite build && node scripts/post-build.mjs --demo",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "catalogue": "node tools/build-catalogue.mjs",
+    "api": "node tools/reference-server.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource/karla": "^5.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^10.8.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.7.0",
+    "vite": "^5.4.8"
+  }
+}

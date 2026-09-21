@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="400" height="600" role="img" aria-label="The Wintering by Ada Fenwick">
+  <rect width="400" height="600" fill="#33502C"/>
+  <rect x="0" y="0" width="10" height="600" fill="#000" opacity="0.22"/>
+  <rect x="150" y="112" width="100" height="100" fill="none" stroke="#CBB06A" stroke-width="1.5"/>
+  <text x="200" y="182" font-family="Georgia,'Times New Roman',serif" font-size="58" fill="#CBB06A" text-anchor="middle">W</text>
+  <text font-family="Georgia,'Times New Roman',serif" font-size="40" fill="#E9F0E4" text-anchor="middle" letter-spacing="1"><tspan x="200" y="374">THE WINTERING</tspan></text>
+  <line x1="166" y1="512" x2="234" y2="512" stroke="#CBB06A" stroke-width="1"/>
+  <text x="200" y="540" font-family="'Helvetica Neue',Arial,sans-serif" font-size="15" fill="#CBB06A" text-anchor="middle" letter-spacing="3.5">FENWICK</text>
+</svg>
