@@ -60,7 +60,23 @@ provider:
           Condition:
             StringEquals:
               dynamodb:EnclosingOperation: TransactWriteItems
-  # No direct Orders writes/reads, index access, or S3/Cognito IAM grants.
+        # GET /orders reads only the caller's partition of the Orders table.
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+          Resource:
+            Fn::Sub:
+              - 'arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${OrdersTable}'
+              - OrdersTable: ${env:ORDERS_TABLE}
+        # POST /upload_file writes only under the publicly readable covers/uploads/ prefix.
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+          Resource:
+            Fn::Sub:
+              - 'arn:${AWS::Partition}:s3:::${UploadsBucket}/covers/uploads/*'
+              - UploadsBucket: ${env:UPLOADS_BUCKET}
+  # No direct Orders writes, index access, other S3 actions, or Cognito IAM grants.
   # Leave deploymentBucket unset: Serverless artifacts use its own bucket, not UPLOADS_BUCKET.
 
 functions:

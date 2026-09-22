@@ -505,20 +505,87 @@ transaction cancellation details nor AWS resource identifiers.
 curl -X POST "$BASE_URL/checkout" -H "Authorization: Bearer $ID_TOKEN" -H 'Content-Type: application/json' --data '{"shippingAddress":{"fullName":"Example Reader","line1":"1 Example Street","city":"Auckland","postcode":"1010","country":"New Zealand"}}'
 ```
 
-## 8. Future/not-yet-implemented APIs
+## 8. Orders API
 
-These are contract targets with **no implemented Flask business routes**:
+### GET /orders
 
-| Endpoint | Intended purpose/access |
+Order history for the authenticated user. Requires
+`Authorization: Bearer <Cognito ID token>`; no admin group is required. Ownership
+comes only from verified `sub`; a `userId` query parameter is ignored and can
+never select another user's orders. No request body.
+
+**200 response**: `{ "count": number, "orders": Order[] }`, newest first. Each
+Order has exactly the same shape as the `POST /checkout` 201 response
+(`orderId`, `userId`, `placedAt`, `status`, `shippingAddress`, `items`, `total`)
+with purchase-time item snapshots and monetary JSON numbers. The internal
+`placedAtOrderId` sort key is not exposed. A user with no orders receives
+`{ "count": 0, "orders": [] }`. All DynamoDB Query pages are read; there is no
+API pagination.
+
+| Status | Meaning/message |
 | --- | --- |
-| `GET /orders` | Authenticated user's order history. |
-| `POST /upload_file` | Admin image upload. |
+| 200 | Order history (possibly empty). |
+| 401 | Missing/invalid Cognito ID token. |
+| 500 | Unexpected storage/internal failure; standard safe envelope. |
 
-See the [authoritative contract](api-contract.md) for planned schemas. Existing
-models do not make these operations available. Do not treat route-not-found
-responses as implemented business behavior or claim uploads/S3 delivery work.
+```sh
+curl "$BASE_URL/orders" -H "Authorization: Bearer $ID_TOKEN"
+```
 
-## 9. Verification status
+## 9. Upload API
+
+### POST /upload_file
+
+Upload one product cover image to S3. **Admin only**: requires a Cognito ID
+token whose `cognito:groups` contains exactly `admins`.
+
+Request (`Content-Type: application/json`):
+
+```json
+{
+  "filename": "cover.png",
+  "dataUrl": "data:image/png;base64,iVBORw0KGgo..."
+}
+```
+
+- `filename`: required non-empty string. It is informational only and is never
+  used in the S3 object key.
+- `dataUrl`: required base64 data URL declaring `image/jpeg`, `image/png`, or
+  `image/webp`. Decoded content must be 1 byte to 3 MiB (3,145,728 bytes) and
+  its file signature must match the declared type (for example, SVG or GIF data
+  labelled `image/png` is rejected).
+- Unknown fields return 400.
+
+**201 response**:
+
+```json
+{
+  "url": "https://<uploads-bucket>.s3.ap-southeast-2.amazonaws.com/covers/uploads/img-<uuid>.png",
+  "s3Key": "covers/uploads/img-<uuid>.png"
+}
+```
+
+The object key is server-generated under `covers/uploads/`. `url` is the plain
+S3 object URL and is intended to be saved as a Product's `coverUrl`; it is
+publicly readable only if the uploads bucket policy allows public `s3:GetObject`
+on `covers/*` (as set up by `frontend/tools/aws/scripts/03-covers-bucket.sh`).
+No CloudFront URL or presigned workflow is used.
+
+| Status | Meaning/message |
+| --- | --- |
+| 201 | Image stored; `{ url, s3Key }` returned. |
+| 400 | Invalid body/field, unsupported/oversized data URL, or `File content does not match a JPEG, PNG, or WebP image.` |
+| 401 | Missing/invalid Cognito ID token. |
+| 403 | `This action requires an admin account.` |
+| 413 | Request body above the 5 MiB application limit. |
+| 500 | Unexpected S3/internal failure; standard safe envelope. |
+
+```sh
+curl -X POST "$BASE_URL/upload_file" -H "Authorization: Bearer $ID_TOKEN" -H 'Content-Type: application/json' \
+  --data "{\"filename\":\"cover.png\",\"dataUrl\":\"data:image/png;base64,$(base64 -w0 cover.png)\"}"
+```
+
+## 10. Verification status
 
 As recorded in [current-status.md](current-status.md) on 2026-09-21:
 
@@ -534,8 +601,8 @@ As recorded in [current-status.md](current-status.md) on 2026-09-21:
 | `PUT /cart/:productId` | Yes | Yes, user-reported | Yes, user-reported |
 | `DELETE /cart/:productId` | Yes | Yes, user-reported | Yes, user-reported |
 | `POST /checkout` | Yes | Not separately recorded | Yes, user-reported |
-| `GET /orders` | No | No | No |
-| `POST /upload_file` | No | No | No |
+| `GET /orders` | Yes (not yet deployed) | Not recorded | Not recorded |
+| `POST /upload_file` | Yes (not yet deployed) | Not recorded | Not recorded |
 
 Product CRUD was manually verified through the deployed API Gateway URL across
 API Gateway -> Lambda Python 3.12 -> serverless-wsgi -> Flask -> DynamoDB,
@@ -553,7 +620,9 @@ local manual verification was not separately reported, and a detailed inventory
 of tested edge cases was not supplied. Recorded syntax/import, route registration,
 schema and configuration checks are **not manual endpoint verification**; cloud
 verification here is based on the user's report, not code or generated tests.
-GET /orders, uploads, S3 delivery, and frontend integration remain unverified.
+GET /orders and POST /upload_file are implemented with automated unit tests
+only; manual local/AWS verification, S3 public delivery, and frontend
+integration remain unverified.
 
 The contract's dated 2026-09-11 implementation-status paragraph describes an older
 snapshot with no business routes; it is not the current implementation inventory.
