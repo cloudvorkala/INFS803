@@ -78,8 +78,7 @@ The client supports both, switched by one environment variable, so this is your 
 
 Either clears the brief's 10-route minimum. The report must match whichever ships.
 
-Either way the client sends the token **raw in the `Authorization` header, no `Bearer`
-prefix**. If you'd rather have `Bearer`, say so and the client changes one line.
+Either way the client sends the token as **`Authorization: Bearer <token>`**.
 
 For verifying Cognito JWTs in Express, `aws-jwt-verify` is the official library — you're
 on EC2, so there's no API Gateway authorizer doing it for you.

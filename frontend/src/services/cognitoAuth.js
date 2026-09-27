@@ -2,7 +2,7 @@
    Real AWS Cognito authentication provider.
 
    TO ACTIVATE:
-     1) npm install aws-amplify
+     1) npm install aws-amplify   (already a dependency of this project)
      2) fill VITE_COGNITO_USER_POOL_ID / VITE_COGNITO_CLIENT_ID / VITE_COGNITO_REGION
         in your .env
      3) set VITE_AUTH_MODE=cognito
@@ -10,10 +10,9 @@
    Nothing else in the app changes — `authService.js` picks this module up and
    every component keeps calling the same five functions.
 
-   Note on the imports: `aws-amplify` is loaded through a *dynamic* import with
-   a non-literal specifier so that Vite does not try to resolve the package at
-   build time. That keeps the project building and running in mock mode before
-   anyone has installed the AWS SDK.
+   Note on the imports: kept as dynamic imports (literal specifiers, so Vite
+   still resolves and code-splits them normally) purely so `aws-amplify` is
+   only ever pulled into a loaded chunk when this provider is actually used.
    --------------------------------------------------------------------------- */
 
 import { COGNITO } from './config.js';
@@ -21,11 +20,8 @@ import { COGNITO } from './config.js';
 let configured = false;
 
 async function amplifyAuth() {
-  const coreSpecifier = 'aws-amplify';
-  const authSpecifier = 'aws-amplify/auth';
-
-  const core = await import(/* @vite-ignore */ coreSpecifier);
-  const auth = await import(/* @vite-ignore */ authSpecifier);
+  const core = await import('aws-amplify');
+  const auth = await import('aws-amplify/auth');
 
   if (!configured) {
     if (!COGNITO.userPoolId || !COGNITO.userPoolClientId) {
@@ -95,15 +91,25 @@ export async function confirmForgotPassword(email, code, newPassword) {
 
 export async function login(email, password) {
   const auth = await amplifyAuth();
-  try {
-    const { isSignedIn } = await auth.signIn({ username: email, password });
-    return isSignedIn;
-  } catch (err) {
-    // Amplify throws this when the account was never confirmed. The UI catches
-    // the name and sends them to the code screen rather than showing a dead end.
-    if (err?.name === 'UserNotConfirmedException') throw err;
-    throw err;
+  const { isSignedIn, nextStep } = await auth.signIn({ username: email, password });
+
+  // Amplify does not always throw when sign-in is incomplete — a forced
+  // password reset, MFA, or an unconfirmed account comes back as
+  // `isSignedIn: false` with a `nextStep` instead. Left unchecked, the caller
+  // would treat this as a successful login with no session behind it.
+  if (!isSignedIn) {
+    if (nextStep?.signInStep === 'CONFIRM_SIGN_UP') {
+      const err = new Error('This account has not been verified yet.');
+      err.name = 'UserNotConfirmedException';
+      throw err;
+    }
+    throw new Error(
+      `Sign-in did not complete (${nextStep?.signInStep ?? 'unknown next step'}). ` +
+        'Contact whoever created your account — it likely needs a password reset or extra verification step this app does not yet support.'
+    );
   }
+
+  return isSignedIn;
 }
 
 export async function logout() {
