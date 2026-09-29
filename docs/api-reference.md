@@ -4,7 +4,7 @@ Maintained practical reference for frontend developers, Postman/manual testing,
 markers, and future maintainers. [api-contract.md](api-contract.md) is the
 authoritative design/contract boundary; this reference describes current usage.
 Implementation and verification evidence comes from
-[current-status.md](current-status.md). Last reviewed: 2026-09-21.
+[current-status.md](current-status.md). Last reviewed: 2026-09-30.
 
 ## 1. Base URL
 
@@ -566,9 +566,9 @@ Request (`Content-Type: application/json`):
 ```
 
 The object key is server-generated under `covers/uploads/`. `url` is the plain
-S3 object URL and is intended to be saved as a Product's `coverUrl`; it is
-publicly readable only if the uploads bucket policy allows public `s3:GetObject`
-on `covers/*` (as set up by `frontend/tools/aws/scripts/03-covers-bucket.sh`).
+S3 object URL and is intended to be saved as a Product's `coverUrl`. It is
+publicly readable because the uploads bucket policy allows public `s3:GetObject`
+on `covers/*` only (configured 2026-09-30; see current-status.md).
 No CloudFront URL or presigned workflow is used.
 
 | Status | Meaning/message |
@@ -587,7 +587,7 @@ curl -X POST "$BASE_URL/upload_file" -H "Authorization: Bearer $ID_TOKEN" -H 'Co
 
 ## 10. Verification status
 
-As recorded in [current-status.md](current-status.md) on 2026-09-21:
+As recorded in [current-status.md](current-status.md) on 2026-09-30:
 
 | Endpoint | Implemented | Local manual verification | AWS manual verification |
 | --- | --- | --- | --- |
@@ -601,8 +601,8 @@ As recorded in [current-status.md](current-status.md) on 2026-09-21:
 | `PUT /cart/:productId` | Yes | Yes, user-reported | Yes, user-reported |
 | `DELETE /cart/:productId` | Yes | Yes, user-reported | Yes, user-reported |
 | `POST /checkout` | Yes | Not separately recorded | Yes, user-reported |
-| `GET /orders` | Yes (not yet deployed) | Not recorded | Not recorded |
-| `POST /upload_file` | Yes (not yet deployed) | Not recorded | Not recorded |
+| `GET /orders` | Yes | Not recorded | Yes, user-run Postman on `orderstest` stage |
+| `POST /upload_file` | Yes | Not recorded | Yes, user-run Postman on `orderstest` stage |
 
 Product CRUD was manually verified through the deployed API Gateway URL across
 API Gateway -> Lambda Python 3.12 -> serverless-wsgi -> Flask -> DynamoDB,
@@ -620,9 +620,11 @@ local manual verification was not separately reported, and a detailed inventory
 of tested edge cases was not supplied. Recorded syntax/import, route registration,
 schema and configuration checks are **not manual endpoint verification**; cloud
 verification here is based on the user's report, not code or generated tests.
-GET /orders and POST /upload_file are implemented with automated unit tests
-only; manual local/AWS verification, S3 public delivery, and frontend
-integration remain unverified.
+GET /orders and POST /upload_file passed a user-run Postman collection
+(17 requests, 30/30 assertions) on the separate `orderstest` stage on 2026-09-30,
+including two-user order isolation, admin-only upload, validation errors and
+public S3 delivery of the uploaded image. They reach the shared `dev` stage only
+after merge and redeploy. Frontend integration remains unverified.
 
 The contract's dated 2026-09-11 implementation-status paragraph describes an older
 snapshot with no business routes; it is not the current implementation inventory.
