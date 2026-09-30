@@ -1,10 +1,11 @@
 # Current Backend Status
 
 Last updated: 2026-09-30. All twelve contract operations are implemented.
-Product, Cart, and Checkout are deployed to the shared `dev` stage and user-verified.
-GET /orders and POST /upload_file were deployed from branch `feature/orders-upload`
-to a separate `orderstest` stage and passed a 30/30 Postman run (see below); they
-reach `dev` only after that branch is merged and `dev` is redeployed.
+The user confirms all twelve operations are now deployed to the shared `dev`
+stage at `https://8lvgv7w3l0.execute-api.ap-southeast-2.amazonaws.com/dev`.
+Product, Cart and Checkout have prior user-reported AWS verification. Orders and
+Upload passed a 30/30 Postman run on `orderstest`; a repeat authenticated check on
+`dev` has not yet been recorded. Deployment does not establish retest results.
 
 ## Implementation Summary
 
@@ -13,7 +14,7 @@ Cart operations, and POST /checkout are implemented in the repository. Product
 reads are public; product writes require a verified Cognito ID token and exact `admins` group
 membership. Cart/Checkout ownership uses only the verified Cognito `sub`.
 GET /orders (authenticated, owner-only) and POST /upload_file (admin-only S3
-upload) are implemented on `feature/orders-upload`. CORS OPTIONS requests return 204,
+upload) are also implemented and now user-reported deployed to `dev`. CORS OPTIONS requests return 204,
 which is not a functional business API operation.
 
 The contract defines 12 operations, including 4 POST operations. All twelve are
@@ -21,6 +22,79 @@ implemented, including four POSTs. The assignment minimum (10 operations, 3 POST
 was already met by the ten `dev`-deployed, user-verified APIs. Product CRUD, Cart, and Checkout have passed
 user-reported AWS testing. Cart also has recorded local manual verification;
 local manual Checkout verification has not been separately reported.
+
+## Backend Performance Optimization (2026-09-30, Dev Deployment Confirmed)
+
+Implemented on `refector/GET_refector`, without frontend changes:
+
+- [repositories/dynamodb.py](../backend/repositories/dynamodb.py) lazily reuses
+  SDK sessions, DynamoDB table handles and connection pools within each application
+  worker thread. Product, Cart and Order access shares the resource; Checkout
+  retains a separate low-level client for explicitly serialized transactions.
+  Warm Lambda invocations can reuse these objects. Startup still performs no AWS
+  access, and resources are not shared between Flask worker threads.
+- No product, stock, cart, order or response data cache was added. Pagination,
+  read consistency, ownership, response mapping and conditional/atomic writes
+  retain their existing behavior. IAM, dependencies and architecture are unchanged.
+- Allowed-origin OPTIONS responses now include `Access-Control-Max-Age: 300`.
+  Browsers can reuse matching preflights for five minutes; the exact-origin
+  allowlist and actual-request authentication remain enforced. This reduces
+  repeated preflights, not the first preflight or Lambda cold-start work.
+- Local validation passed: existing auth/config/contracts/orders-upload regression
+  tests; Python 3.12 grammar/imports; twelve route registrations; YAML inspection;
+  and network-blocked SDK/Flask checks of lazy initialization, reuse, application/
+  thread isolation, paginated/filterable Product reads, fresh stock reads, numeric
+  responses, CORS, and Checkout transaction encoding/conflict handling. No new
+  test files were added. Checks used Windows Python 3.13.2, not Lambda.
+- Follow-up full existing-suite run: 143 passed, 3 failed. The failures are the
+  previously documented obsolete foundation assertions: two expect `/products`
+  to be unregistered (404), and one expects no Lambda IAM policy. The product
+  requests instead reach SDK initialization, which the offline network fixture
+  blocks, producing 500. These tests were not changed; the full suite is not green.
+  Additional network-blocked checks passed for four-thread isolation with 100
+  reuse checks per thread, SDK initialization-failure recovery, safe storage-error
+  responses followed by a successful read, allowed/disallowed-origin preflights,
+  and unauthenticated protected-route rejection. These are offline checks, not
+  an AWS load test or measured end-to-end performance improvement.
+
+The user subsequently confirmed deployment to `dev`. A read-only live check of
+`GET /products` returned 200 and eight products on four consecutive requests:
+385, 90, 84 and 72 ms, measured client-side including response-body download.
+OPTIONS returned 204 with `Access-Control-Max-Age: 300` and the exact allowed
+origin `https://main.dcgzrxjjzkur.amplifyapp.com`. This verifies the deployed
+preflight header, not browser cache reuse or every authenticated business flow.
+No cloud writes or deployment were performed by the agent. The user's existing
+`memorySize: 512` edit was preserved; the live memory setting was not inspected.
+
+For a controlled performance comparison, measure cold and warm `GET /products` under the same
+memory setting, inspect Lambda Duration/Init Duration, and verify browser preflight
+reuse with the real Amplify origin. Recheck product updates appearing in reads,
+Cart isolation and Checkout success/conflict behavior. These four samples do not
+identify a Lambda cold start, establish a controlled before/after speedup, or
+measure the frontend's full first-page loading time.
+
+### Follow-up live HTTP comparison (2026-09-30)
+
+Read-only requests from the development machine to the deployed Amplify site and
+API Gateway URL, timed through full response download using Python urllib:
+
+| Request | Initial observation | Latest observation |
+| --- | --- | --- |
+| Frontend HTML | 116 ms | 192 ms, 200 |
+| Main JavaScript (gzip, approximately 83 KB) | 238 ms | 123 ms, 200 |
+| Product OPTIONS | 69 ms; no max-age | 77 ms, 204; max-age 300 |
+| GET /products | 577, 499, 479, 431 ms | 80, 75, 99, 72, 75, 69 ms; all 200 |
+| GET /products/:id | Not recorded in initial comparison | 64 ms, 200 |
+
+Product-list responses still contain eight products and 1,874 bytes. The observed
+mean declined from 496.5 to 78.3 ms (approximately 84%). Samples were taken at
+different times, without controlling Lambda memory, initialization, network or
+cache state; this is not causal proof of the SDK optimization alone. OPTIONS
+preceded the latest GETs, so the first measured GET is not a cold-start measurement.
+No CloudWatch execution traces, Cognito login, authenticated mutations, S3 cover
+delivery or full browser rendering were tested. No browser connection was available
+for the attempted visual check. Do not sum separately fetched resource times as a
+page-load metric or treat this check as verification of all twelve operations.
 
 ## First AWS Dev Deployment: Manually Verified
 
@@ -49,14 +123,14 @@ provided. GET /orders and POST /upload_file were verified separately on the
 
 | Area | Current code | Remaining work |
 | --- | --- | --- |
-| Flask / Lambda | Application factory, WSGI adapter, five Product, four Cart, one Checkout, one Orders and one Upload operation. | Merge `feature/orders-upload` and redeploy `dev`. |
+| Flask / Lambda | All twelve operations implemented and user-reported deployed to `dev`. | Repeat authenticated Orders/Upload checks on `dev`. |
 | Configuration | Product deployment settings work; exact CORS policy retained. | Configure and verify frontend integration and remaining services. |
 | Authentication | Cognito/admin Product checks, two-user Cart and Orders isolation, and admin-only upload manually verified; Checkout uses verified sub. | Retain isolation regression coverage. |
 | API models | Product, Cart, Checkout, ShippingAddress, Order, OrderList and Upload models wired into implemented routes. | None. |
 | HTTP handling | Product/Cart/Checkout use explicit validation / serialization and JSON errors; CORS and body limit retained. | Align legacy application tests and integrate remaining routes. |
 | DynamoDB / checkout | Product/Cart/Checkout deployed and user-reported AWS tests passed; Orders Query verified on `orderstest`. | Retain transaction/conflict regression coverage. |
 | S3 uploads | Request validation plus file-signature check, server-generated `covers/uploads/` keys, S3 PutObject and public object URLs; verified on `orderstest`. | Frontend integration; optional CloudFront delivery. |
-| Deployment | Product CRUD, Cart and Checkout on `dev`; Orders/Upload on `orderstest`. | Merge, redeploy `dev`, remove `orderstest`; frontend integration. |
+| Deployment | All twelve operations now on `dev`; earlier Orders/Upload verification was on `orderstest`. | Dev regression checks and frontend integration; `orderstest` cleanup status not confirmed. |
 
 ## Confirmed Target
 
@@ -452,8 +526,9 @@ Lightweight local validation on 2026-09-14, after implementing admin writes:
 
 ## Remaining Integration / Deployment Work
 
-- Merge `feature/orders-upload`, redeploy `dev`, re-run the Postman collection
-  against `dev`, then remove the `orderstest` stage.
+- Re-run the authenticated Orders/Upload Postman collection against the now
+  deployed `dev` stage. Confirm whether `orderstest` is still needed before any
+  separately authorized cleanup.
 - For future Checkout regression runs, review configured table names,
   Orders `userId`/`placedAtOrderId` schema and transaction-only IAM. Then manually
   exercise POST /checkout locally and through API Gateway with two users: valid
@@ -483,4 +558,5 @@ Lightweight local validation on 2026-09-14, after implementing admin writes:
 
 This documentation records user-reported deployment and testing results. The
 `orderstest` deployment, Postman run and S3 bucket change were performed by the
-user; the agent ran only the local automated tests.
+user; the agent ran local automated checks and the read-only dev Product/CORS
+checks recorded above.
