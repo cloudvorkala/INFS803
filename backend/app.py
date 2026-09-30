@@ -8,6 +8,7 @@ from errors import register_error_handlers
 from http_helpers import ExplicitJSONProvider
 from repositories.cart import CartRepository
 from repositories.checkout import CheckoutRepository
+from repositories.dynamodb import DynamoDBConnections
 from repositories.orders import OrderRepository
 from repositories.products import ProductRepository
 from repositories.uploads import UploadRepository
@@ -28,17 +29,18 @@ def create_app(settings: Settings | None = None) -> Flask:
     app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # Room for a 3 MiB base64 image plus JSON.
     app.extensions["settings"] = settings
     app.extensions["cognito_verifier"] = CognitoVerifier(settings)
-    app.extensions["product_repository"] = ProductRepository(settings)
-    app.extensions["cart_repository"] = CartRepository(settings)
+    connections = DynamoDBConnections(settings.aws_region)
+    app.extensions["product_repository"] = ProductRepository(settings, connections)
+    app.extensions["cart_repository"] = CartRepository(settings, connections)
     app.extensions["cart_service"] = CartService(
         app.extensions["cart_repository"], app.extensions["product_repository"],
     )
-    app.extensions["checkout_repository"] = CheckoutRepository(settings)
+    app.extensions["checkout_repository"] = CheckoutRepository(settings, connections)
     app.extensions["checkout_service"] = CheckoutService(
         app.extensions["cart_repository"], app.extensions["product_repository"],
         app.extensions["checkout_repository"],
     )
-    app.extensions["order_repository"] = OrderRepository(settings)
+    app.extensions["order_repository"] = OrderRepository(settings, connections)
     app.extensions["upload_service"] = UploadService(UploadRepository(settings))
     register_error_handlers(app)
     app.register_blueprint(products_blueprint)
@@ -60,6 +62,8 @@ def create_app(settings: Settings | None = None) -> Flask:
             response.headers["Access-Control-Allow-Origin"] = origin
             response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
             response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+            if request.method == "OPTIONS":
+                response.headers["Access-Control-Max-Age"] = "300"
         return response
 
     return app

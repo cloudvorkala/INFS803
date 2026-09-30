@@ -21,6 +21,23 @@ passed Postman testing on a separate `orderstest` stage (2026-09-30); see
 into the existing `Product` response model. `app.py` registers the blueprint and
 repository. Creating the app does not create an SDK session or contact DynamoDB.
 
+`repositories/dynamodb.py` lazily reuses a Session, DynamoDB resource/table handles,
+and their HTTP connection pool per application worker thread. Product, Cart and
+Order repositories share that resource; Checkout uses a separate low-level client
+so its explicitly serialized transaction values are not converted twice. The
+cached Lambda application retains these SDK objects between warm invocations.
+Resources are isolated by thread in local Flask execution, following
+[boto3's threading guidance](https://docs.aws.amazon.com/boto3/latest/guide/resources.html#multithreading-or-multiprocessing-with-resources).
+Only SDK objects are reused: records, stock, credentials copied out of the SDK,
+and API responses are not cached. Existing read consistency and write conditions
+remain unchanged; role credentials continue through the SDK's provider chain.
+
+Allowed-origin OPTIONS responses advertise a 300-second preflight lifetime,
+reducing repeated browser preflights without changing the exact-origin allowlist
+or authentication. See the [API reference](../docs/api-reference.md). This does
+not remove first-request initialization or the first browser preflight; measure
+cold and warm requests separately after deployment before claiming a speedup.
+
 - `GET /products` returns 200 `{ "count": number, "products": Product[] }`.
   Optional `category` matches the complete category without case sensitivity;
   optional `search` matches a substring of title, author, or ISBN without case

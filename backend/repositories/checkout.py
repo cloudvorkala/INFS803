@@ -1,17 +1,17 @@
 """One atomic write of an Order, Product stock decrements, and owned cart deletes."""
 
 from boto3.dynamodb.types import TypeSerializer
-from boto3.session import Session
 from botocore.exceptions import ClientError
 
 from config import Settings
 from errors import ApiError
 from models.orders import MAX_CHECKOUT_LINES, Order
+from repositories.dynamodb import DynamoDBConnections
 
 
 class CheckoutRepository:
-    def __init__(self, settings: Settings):
-        self._region = settings.aws_region
+    def __init__(self, settings: Settings, connections: DynamoDBConnections | None = None):
+        self._connections = connections if connections is not None else DynamoDBConnections(settings.aws_region)
         self._products_table = settings.products_table
         self._carts_table = settings.carts_table
         self._orders_table = settings.orders_table
@@ -67,7 +67,7 @@ class CheckoutRepository:
 
         # 1 Order Put + N Product Updates + N Cart Deletes; at most 81 operations.
         # No separate writes/cleanup, application retry loop, or idempotency layer.
-        client = Session().client("dynamodb", region_name=self._region)
+        client = self._connections.client()
         try:
             client.transact_write_items(TransactItems=operations)
         except ClientError as error:

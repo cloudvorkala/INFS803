@@ -4,10 +4,10 @@ from collections.abc import Mapping
 from decimal import Decimal
 
 from boto3.dynamodb.conditions import Key
-from boto3.session import Session
 
 from config import Settings
 from models.orders import Order, OrderItem, ShippingAddress
+from repositories.dynamodb import DynamoDBConnections
 
 
 def _stored_integer(value: object) -> int:
@@ -45,13 +45,12 @@ def _order_from_item(item: Mapping[str, object], user_id: str) -> Order:
 
 
 class OrderRepository:
-    def __init__(self, settings: Settings):
-        self._region = settings.aws_region
+    def __init__(self, settings: Settings, connections: DynamoDBConnections | None = None):
+        self._connections = connections if connections is not None else DynamoDBConnections(settings.aws_region)
         self._table_name = settings.orders_table
 
     def _get_table(self):
-        # No SDK resource or AWS access at app startup; each operation owns its session.
-        return Session().resource("dynamodb", region_name=self._region).Table(self._table_name)
+        return self._connections.table(self._table_name)
 
     def list_orders(self, user_id: str) -> list[Order]:
         # Sort key is "<ISO timestamp>#<orderId>", so descending order is newest first.

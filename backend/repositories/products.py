@@ -5,12 +5,12 @@ from decimal import Decimal
 from uuid import uuid4
 
 from boto3.dynamodb.conditions import Attr
-from boto3.session import Session
 from botocore.exceptions import ClientError
 
 from config import Settings
 from errors import ApiError
 from models.products import Product, ProductCreate, ProductUpdate
+from repositories.dynamodb import DynamoDBConnections
 
 SEARCHABLE_FIELDS = ("title", "author", "isbn")
 
@@ -48,15 +48,12 @@ def _product_from_item(item: Mapping[str, object]) -> Product:
 
 
 class ProductRepository:
-    def __init__(self, settings: Settings):
-        self._region = settings.aws_region
+    def __init__(self, settings: Settings, connections: DynamoDBConnections | None = None):
+        self._connections = connections if connections is not None else DynamoDBConnections(settings.aws_region)
         self._table_name = settings.products_table
 
     def _get_table(self):
-        # Create the SDK resource only during an operation, never at app startup.
-        # Each operation owns its session/resource; no shared resource across threads.
-        # The default credential chain uses the Lambda execution role in AWS.
-        return Session().resource("dynamodb", region_name=self._region).Table(self._table_name)
+        return self._connections.table(self._table_name)
 
     def list_products(self, *, category: str | None = None, search: str | None = None) -> list[Product]:
         category_filter = category.casefold() if category else None

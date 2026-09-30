@@ -11,7 +11,7 @@ provider:
   stage: ${opt:stage, env:STAGE, 'dev'}
   architecture: x86_64
   timeout: 15
-  memorySize: 256
+  memorySize: 512
   logRetentionInDays: 14
   environment:
     # AWS_REGION is reserved: Lambda supplies the actual deployment region.

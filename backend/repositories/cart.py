@@ -1,12 +1,12 @@
 """Partition-scoped cart persistence; all keys use the caller's verified user ID."""
 
 from boto3.dynamodb.conditions import Attr, Key
-from boto3.session import Session
 from botocore.exceptions import ClientError
 
 from config import Settings
 from errors import ApiError
 from models.cart import CartLine
+from repositories.dynamodb import DynamoDBConnections
 
 
 def _line_from_item(item, user_id: str) -> CartLine:
@@ -19,13 +19,12 @@ def _line_from_item(item, user_id: str) -> CartLine:
 
 
 class CartRepository:
-    def __init__(self, settings: Settings):
-        self._region = settings.aws_region
+    def __init__(self, settings: Settings, connections: DynamoDBConnections | None = None):
+        self._connections = connections if connections is not None else DynamoDBConnections(settings.aws_region)
         self._table_name = settings.carts_table
 
     def _get_table(self):
-        # No SDK resource or AWS access at app startup; each operation owns its session.
-        return Session().resource("dynamodb", region_name=self._region).Table(self._table_name)
+        return self._connections.table(self._table_name)
 
     def list_lines(self, user_id: str) -> list[CartLine]:
         table = self._get_table()
