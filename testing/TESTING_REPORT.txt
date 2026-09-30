@@ -1,0 +1,338 @@
+TESTING REPORT
+
+Tester: Tandra
+Branch: feature/tandra-testing
+
+Test Case 1
+Feature: Browse Category
+Steps:
+1. Open the application.
+2. Go to Browse Category.
+3. Select a category.
+
+Expected Result:
+The selected category should display correctly.
+
+Actual Result:
+The category displayed correctly.
+
+Status: PASS
+
+
+Test Case 2
+Feature: Filter
+Steps:
+1. Open the filter option.
+2. Select a filter.
+3. Check the displayed results.
+
+Expected Result:
+Only matching results should be displayed.
+
+Actual Result:
+The filter worked correctly.
+
+Status: PASS
+
+
+Test Case 3: Search Function
+
+Steps:
+1. Open the application.
+2. Search for "The Salt Path Home".
+3. Check the displayed result.
+
+Expected Result:
+Only the matching book should be displayed.
+
+Actual Result:
+The matching book was displayed correctly.
+
+Status: PASS
+
+Evidence:
+Evidence 3 – Search result showing "The Salt Path Home".
+
+Test Case 4
+Feature: Sort by Price – Low to High
+
+Steps:
+1. Open the application.
+2. Select "Price: Low to High" from the sorting option.
+3. Check the order of the displayed books.
+
+Expected Result:
+Books should be displayed from the lowest price to the highest price.
+
+Actual Result:
+The books were sorted correctly from low price to high price.
+
+Status: PASS
+
+
+Test Case 5
+Feature: Add to Cart
+
+Steps:
+1. Sign in to the application.
+2. Open a book details page.
+3. Click "Add to cart".
+4. Open the Cart.
+
+Expected Result:
+The selected book should be added to the cart.
+
+Actual Result:
+The selected book was added to the cart successfully.
+
+Status: PASS
+
+Evidence:
+Evidence 5 - Cart showing "Field Notes for the Sleepless".
+
+
+Test Case 6
+Feature: Remove from Cart
+
+Steps:
+1. Open the Cart.
+2. Click "Remove" for the selected book.
+3. Check the cart contents.
+
+Expected Result:
+The selected book should be removed from the cart.
+
+Actual Result:
+The selected book was removed successfully.
+
+Status: PASS
+
+Evidence:
+Evidence 6 - Cart showing the item removed successfully.
+
+
+Test Case 7
+Feature: Sign Out
+
+Steps:
+1. Sign in to the application.
+2. Click "Sign out".
+3. Check the application header.
+
+Expected Result:
+The user should be signed out successfully.
+
+Actual Result:
+The user was signed out successfully and the Sign in option was displayed.
+
+Status: PASS
+
+Evidence:
+Evidence 7 - Sign in option displayed after signing out.
+
+
+Test Case 8
+Feature: Valid Sign In
+
+Steps:
+1. Open the Sign in page.
+2. Enter a valid email and password.
+3. Click "Sign in".
+4. Check that the user is signed in successfully.
+
+Expected Result:
+The user should be signed in successfully with valid credentials.
+
+Actual Result:
+The user was signed in successfully.
+
+Status: PASS
+
+Evidence:
+Evidence 8 - Successful sign in with valid credentials.
+
+
+Test Case 9
+Feature: Add Multiple Quantity to Cart
+
+Steps:
+1. Sign in to the application.
+2. Open a book details page.
+3. Set the quantity to 5.
+4. Click "Add to cart".
+5. Open the Cart.
+
+Expected Result:
+The selected book should be added to the cart with a quantity of 5.
+
+Actual Result:
+The selected book was added to the cart successfully with a quantity of 5.
+
+Status: PASS
+
+Evidence:
+Evidence 9 - Cart showing the selected book with quantity 5.
+
+
+Test Case 10
+Feature: Update Cart Quantity
+
+Steps:
+1. Sign in to the application.
+2. Add "Weatherhouse" to the cart.
+3. Increase the quantity to 2.
+4. Check the subtotal and total price.
+
+Expected Result:
+The cart quantity should update to 2 and the total price should be recalculated correctly.
+
+Actual Result:
+The quantity was updated to 2.
+The subtotal and total were updated correctly to $55.00.
+
+Status: PASS
+
+Evidence:
+Evidence 10 - Cart showing "Weatherhouse" with quantity 2 and total $55.00.
+
+
+Test Case 11
+Feature: Sort by Price - High to Low
+
+Steps:
+1. Open the application.
+2. Select "Price: High to Low" from the sorting option.
+3. Check the order of the displayed books.
+
+Expected Result:
+Books should be displayed from the highest price to the lowest price.
+
+Actual Result:
+The books were sorted correctly from high price to low price.
+
+Status: PASS
+
+Evidence:
+Evidence 11 - Books displayed in descending price order.
+
+
+Test Case 12
+Feature: Sort by Newest First
+
+Steps:
+1. Open the application.
+2. Select "Newest first" from the sorting option.
+3. Check the order of the displayed books.
+
+Expected Result:
+Books should be displayed from the newest publication to the oldest publication.
+
+Actual Result:
+The books were sorted correctly with the newest books displayed first.
+
+Status: PASS
+
+Evidence:
+Evidence 12 - Books displayed using the "Newest first" sorting option.
+
+
+Test Case 13
+Feature: Sort by Title - A to Z
+
+Steps:
+1. Open the application.
+2. Select "Title A-Z" from the sorting option.
+3. Check the order of the displayed book titles.
+
+Expected Result:
+Books should be displayed in alphabetical order from A to Z.
+
+Actual Result:
+The book titles were displayed correctly in alphabetical order from A to Z.
+
+Status: PASS
+
+Evidence:
+Evidence 13 - Books displayed in Title A-Z order.
+
+
+Test Case 14
+Feature: Pagination
+
+Steps:
+1. Open the Browse page.
+2. Scroll to the bottom of the page.
+3. Click page number "2".
+4. Check the displayed books.
+
+Expected Result:
+The application should navigate to page 2 and display the next set of books.
+
+Actual Result:
+Page 2 opened successfully and a new set of books was displayed.
+
+Status: PASS
+
+Evidence:
+Evidence 14 - Page 2 selected and the next set of books displayed successfully.
+
+
+Test Case 15
+Feature: History Category Filter
+
+Steps:
+1. Open the Browse page.
+2. Select the "History" category.
+3. Check the displayed books.
+
+Expected Result:
+Only books from the History category should be displayed.
+
+Actual Result:
+Only History category books were displayed correctly.
+
+Status: PASS
+
+Evidence:
+Evidence 15 - History category selected and History books displayed.
+
+
+Test Case 16
+Feature: Art & Design Category Filter
+
+Steps:
+1. Open the Browse page.
+2. Select the "Art & Design" category.
+3. Check the displayed books.
+
+Expected Result:
+Only books from the Art & Design category should be displayed.
+
+Actual Result:
+Only Art & Design category books were displayed correctly.
+
+Status: PASS
+
+Evidence:
+Evidence 16 - Art & Design category selected and matching books displayed.
+
+
+TESTING SUMMARY
+
+Functional testing was carried out on the Paperbound Online Bookstore application to verify that the main user-facing features were working according to the expected behaviour. A total of 16 test cases were completed during the testing process. The testing covered key functions such as browsing book categories, filtering books, searching by book title, sorting books by different options, signing in and signing out, adding books to the cart, removing items from the cart, updating cart quantities, checking price calculations, navigating between catalogue pages, and browsing specific categories such as History and Art & Design.
+
+During the testing, the actual results were compared with the expected results for each test case. The search function successfully returned matching books, while category filters displayed books belonging to the selected category. Sorting functions such as Price Low to High, Price High to Low, Newest First, and Title A–Z produced the expected ordering of books. Cart-related functions were also tested successfully, including adding a book, changing the quantity, recalculating the subtotal and total price, and removing an item from the cart. User authentication functions such as sign in and sign out also behaved as expected.
+
+All 16 recorded functional test cases produced the expected results and were marked as PASS. Evidence was recorded for the tested functions to support the testing results. Overall, the testing confirmed that the major functional features examined during this testing session were operating correctly in the local development environment.
+
+
+CONCLUSION
+
+The functional testing of the Paperbound Online Bookstore application was successfully completed. The results indicate that the main features tested were stable and performed according to their expected requirements. Important user activities, including searching and browsing books, filtering and sorting catalogue items, using authentication features, managing items in the shopping cart, and navigating through catalogue pages, were completed successfully without identifying a functional failure in the recorded test cases.
+
+Based on the 16 completed test cases, the application demonstrated satisfactory functional behaviour for the areas included within the scope of this testing. However, these results apply only to the functions and scenarios that were tested and do not guarantee that the application is free from all possible defects. Further testing could include additional negative test cases, boundary conditions, performance testing, security testing, compatibility testing, and testing against the deployed cloud environment.
+
+Overall Testing Result: PASS
+Total Test Cases Completed: 16
+Passed: 16
+Failed: 0
