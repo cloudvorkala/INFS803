@@ -10,7 +10,9 @@ DynamoDB product table. Admin-only `POST /products`, `PUT /products/:id`, and
 `DELETE /products/:id` persist product changes in the same table. Authenticated
 Cart endpoints and POST /checkout are implemented. All ten Product/Cart/Checkout
 operations are deployed to AWS and have passed user-reported testing (2026-09-21).
-GET /orders and POST /upload_file remain unimplemented.
+Authenticated GET /orders and admin-only POST /upload_file (S3) are implemented and
+passed Postman testing on a separate `orderstest` stage (2026-09-30); see
+[current-status.md](../docs/current-status.md).
 
 ## Product reads
 
@@ -180,9 +182,8 @@ cached for a bounded lifetime, and refreshed on an unknown key ID. Key-service
 failures reject authentication; tokens and claim contents are not returned in errors.
 
 Upload contracts validate the declared JPEG/PNG/WebP MIME type, strict base64,
-and decoded 3 MiB limit. Actual image-content inspection and S3 storage belong to
-the future upload implementation; this foundation does not claim that arbitrary
-bytes declared as an image have been decoded as a real image.
+and decoded 3 MiB limit. `services/uploads.py` additionally checks the file
+signature (magic bytes) against the declared type; it does not fully decode images.
 
 ## First dev deployment preparation (historical)
 

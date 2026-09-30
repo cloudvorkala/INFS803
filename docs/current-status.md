@@ -1,7 +1,10 @@
 # Current Backend Status
 
-Last updated: 2026-09-21. The user confirms that all currently implemented
-Product, Cart, and Checkout operations are deployed to AWS and have passed testing.
+Last updated: 2026-09-30. All twelve contract operations are implemented.
+Product, Cart, and Checkout are deployed to the shared `dev` stage and user-verified.
+GET /orders and POST /upload_file were deployed from branch `feature/orders-upload`
+to a separate `orderstest` stage and passed a 30/30 Postman run (see below); they
+reach `dev` only after that branch is merged and `dev` is redeployed.
 
 ## Implementation Summary
 
@@ -9,14 +12,13 @@ The backend foundation, five Product CRUD operations, four authenticated
 Cart operations, and POST /checkout are implemented in the repository. Product
 reads are public; product writes require a verified Cognito ID token and exact `admins` group
 membership. Cart/Checkout ownership uses only the verified Cognito `sub`.
-GET /orders and POST /upload_file remain unimplemented and are reserved for
-another backend team member. CORS OPTIONS requests return 204,
+GET /orders (authenticated, owner-only) and POST /upload_file (admin-only S3
+upload) are implemented on `feature/orders-upload`. CORS OPTIONS requests return 204,
 which is not a functional business API operation.
 
-The contract defines 12 operations, including 4 POST operations. Ten operations
-are implemented, including three POSTs; two operations remain. This meets the
-assignment's operation-count minimum with ten deployed, user-verified APIs,
-including three POST operations. Product CRUD, Cart, and Checkout have passed
+The contract defines 12 operations, including 4 POST operations. All twelve are
+implemented, including four POSTs. The assignment minimum (10 operations, 3 POSTs)
+was already met by the ten `dev`-deployed, user-verified APIs. Product CRUD, Cart, and Checkout have passed
 user-reported AWS testing. Cart also has recorded local manual verification;
 local manual Checkout verification has not been separately reported.
 
@@ -42,19 +44,19 @@ two Cognito users. These are user-reported results, not new cloud checks by the
 agent. The user now also confirms successful AWS deployment and testing of
 POST /checkout. All ten implemented operations are therefore AWS-verified on
 the basis of user-reported results. A detailed test-case inventory was not
-provided. GET /orders, uploads, S3 delivery, and frontend integration remain
-**unverified**.
+provided. GET /orders and POST /upload_file were verified separately on the
+`orderstest` stage (next section); frontend integration remains **unverified**.
 
 | Area | Current code | Remaining work |
 | --- | --- | --- |
-| Flask / Lambda | Application factory, WSGI adapter, five Product, four Cart, and one Checkout operation. | Teammate implements GET /orders and POST /upload_file. |
+| Flask / Lambda | Application factory, WSGI adapter, five Product, four Cart, one Checkout, one Orders and one Upload operation. | Merge `feature/orders-upload` and redeploy `dev`. |
 | Configuration | Product deployment settings work; exact CORS policy retained. | Configure and verify frontend integration and remaining services. |
-| Authentication | Cognito/admin Product checks and two-user Cart isolation manually verified; Checkout uses verified sub. | Apply ownership to future order listing; retain isolation regression coverage. |
-| API models | Product, Cart, Checkout, ShippingAddress and Order models wired into implemented routes. | Implement remaining operations using their models. |
+| Authentication | Cognito/admin Product checks, two-user Cart and Orders isolation, and admin-only upload manually verified; Checkout uses verified sub. | Retain isolation regression coverage. |
+| API models | Product, Cart, Checkout, ShippingAddress, Order, OrderList and Upload models wired into implemented routes. | None. |
 | HTTP handling | Product/Cart/Checkout use explicit validation / serialization and JSON errors; CORS and body limit retained. | Align legacy application tests and integrate remaining routes. |
-| DynamoDB / checkout | Product/Cart/Checkout deployed and user-reported AWS tests passed. | Retain transaction/conflict regression coverage; implement order listing. |
-| S3 uploads | MIME declaration, strict base64, non-empty decoded data, and 3 MiB size validation in the request model. | Actual image-content validation, S3 writes, object keys, and usable asset URLs. |
-| Deployment | Product CRUD, Cart and Checkout deployed and user-reported AWS tests passed. | Remaining APIs and frontend integration. |
+| DynamoDB / checkout | Product/Cart/Checkout deployed and user-reported AWS tests passed; Orders Query verified on `orderstest`. | Retain transaction/conflict regression coverage. |
+| S3 uploads | Request validation plus file-signature check, server-generated `covers/uploads/` keys, S3 PutObject and public object URLs; verified on `orderstest`. | Frontend integration; optional CloudFront delivery. |
+| Deployment | Product CRUD, Cart and Checkout on `dev`; Orders/Upload on `orderstest`. | Merge, redeploy `dev`, remove `orderstest`; frontend integration. |
 
 ## Confirmed Target
 
@@ -230,6 +232,58 @@ earlier implementation stage, not the subsequent cloud testing.
   package build or Lambda runtime execution was performed. Subsequent successful
   AWS deployment/testing is user-confirmed above.
 
+## Implemented GET /orders and POST /upload_file (AWS Manually Verified on `orderstest`)
+
+Branch `feature/orders-upload` was deployed on 2026-09-30 to a separate Serverless
+stage, `orderstest` (stack `paperbound-backend-orderstest`), using the same Products,
+Carts, Orders tables, uploads bucket and Cognito pool as `dev`. The shared `dev`
+stage was not changed.
+
+- [routes/orders.py](../backend/routes/orders.py) requires `require_auth` and
+  lists only the verified `sub` partition via
+  [repositories/orders.py](../backend/repositories/orders.py): a paginated Query,
+  `ScanIndexForward=False` (newest first), explicit mapping into `Order` so the
+  `placedAtOrderId` sort key is never exposed. Any `userId` query parameter is ignored.
+- [routes/uploads.py](../backend/routes/uploads.py) requires `require_admin` and
+  validates `UploadRequest`. [services/uploads.py](../backend/services/uploads.py)
+  also checks the decoded file signature against the declared JPEG/PNG/WebP type
+  (400 on mismatch) and generates `covers/uploads/img-<uuid4hex>.<ext>`; the client
+  filename is never used in the key. [repositories/uploads.py](../backend/repositories/uploads.py)
+  calls S3 PutObject and returns `https://<bucket>.s3.<region>.amazonaws.com/<key>`.
+- IAM adds only `dynamodb:Query` on the Orders table and `s3:PutObject` on
+  `<uploads bucket>/covers/uploads/*`.
+- Automated: `backend/tests/test_orders_uploads.py` (9 tests) passes. Three older
+  tests (`test_app.py` x2, `test_serverless.py` x1) were already failing before this
+  change because they predate registered routes/IAM; they are unchanged.
+
+### Manual verification (user-run Postman collection, 2026-09-30)
+
+Collection run against `orderstest`: **17 requests, 30/30 assertions passed, 0 errors**,
+using Cognito test users Admin, User A and User B:
+
+- GET /orders: 401 without token; User A's newly created order appears first,
+  all orders belong to User A, `placedAtOrderId` absent, money as JSON numbers,
+  sorted newest first; User B cannot see User A's order, including with
+  `?userId=<User A sub>`.
+- POST /upload_file: 401 without token; 403 for a non-admin user; 201 for admin
+  with `url` and `s3Key` under `covers/uploads/`; the returned URL is publicly
+  readable as `image/png`; fake PNG content, GIF and a missing `dataUrl` return 400.
+
+### S3 bucket change (infrastructure, 2026-09-30)
+
+The first run failed only the public-read check: the uploads bucket
+`paperbound-covers-dev-autinfs803-26` had all four Block Public Access settings
+enabled and no bucket policy, so no object was readable. The user then changed
+the bucket to match `frontend/tools/aws/scripts/03-covers-bucket.sh`:
+
+- Block Public Access: `BlockPublicAcls=true`, `IgnorePublicAcls=true`,
+  `BlockPublicPolicy=false`, `RestrictPublicBuckets=false`.
+- Bucket policy `PublicReadCoversOnly`: `s3:GetObject` for `*` on `covers/*` only.
+  Writes remain limited to IAM principals; other prefixes stay private.
+
+The bucket's `covers/` prefix contained no seed cover images at that time (only
+test uploads), so existing product `coverUrl` values are not served from it.
+
 ## Implemented Foundation
 
 ### Configuration and local execution
@@ -398,8 +452,8 @@ Lightweight local validation on 2026-09-14, after implementing admin writes:
 
 ## Remaining Integration / Deployment Work
 
-- GET /orders and POST /upload_file belong to another backend team member and
-  remain unimplemented.
+- Merge `feature/orders-upload`, redeploy `dev`, re-run the Postman collection
+  against `dev`, then remove the `orderstest` stage.
 - For future Checkout regression runs, review configured table names,
   Orders `userId`/`placedAtOrderId` schema and transaction-only IAM. Then manually
   exercise POST /checkout locally and through API Gateway with two users: valid
@@ -414,9 +468,8 @@ Lightweight local validation on 2026-09-14, after implementing admin writes:
   regressions. Do not treat code/static checks as proof of these behaviors.
 - Align the legacy application test with the current HTTP helpers and add
   appropriate coverage as resource endpoints are implemented.
-- Verify remaining cloud integrations when implemented and authorized, including
-  order listing, uploads, and S3/CloudFront asset delivery. Future S3
-  permissions remain pending implementation and authorization.
+- Optional: serve covers through CloudFront instead of public S3 URLs; this would
+  change the `url` returned by POST /upload_file.
 - Configure deployment-specific values, including allowed frontend CORS origins.
 - Coordinate frontend adoption of the agreed Bearer header; current code sends
   a raw token and therefore cannot authenticate its new admin product calls.
@@ -424,9 +477,10 @@ Lightweight local validation on 2026-09-14, after implementing admin writes:
   established by the reported Product CRUD verification and remain separate checks.
 - Frontend upload UI currently limits files to 2 MiB and offers image/*; the backend
   upload request model enforces the confirmed 3 MiB JPEG/PNG/WebP declaration
-  rules, but the upload endpoint is still absent.
+  rules plus a file-signature check.
 - Verify newly implemented operations through the deployed API using curl,
   Postman, or an equivalent HTTP client.
 
-This documentation update records user-reported deployment and testing results;
-no AWS calls, deployment, or additional tests were performed by the agent.
+This documentation records user-reported deployment and testing results. The
+`orderstest` deployment, Postman run and S3 bucket change were performed by the
+user; the agent ran only the local automated tests.

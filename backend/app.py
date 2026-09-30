@@ -1,4 +1,4 @@
-"""Application factory with product/cart/checkout routes and shared HTTP boundaries."""
+"""Application factory with product/cart/checkout/order/upload routes and shared HTTP boundaries."""
 
 from flask import Flask, request
 
@@ -8,12 +8,17 @@ from errors import register_error_handlers
 from http_helpers import ExplicitJSONProvider
 from repositories.cart import CartRepository
 from repositories.checkout import CheckoutRepository
+from repositories.orders import OrderRepository
 from repositories.products import ProductRepository
+from repositories.uploads import UploadRepository
 from routes.cart import cart_blueprint
 from routes.checkout import checkout_blueprint
+from routes.orders import orders_blueprint
 from routes.products import products_blueprint
+from routes.uploads import uploads_blueprint
 from services.cart import CartService
 from services.checkout import CheckoutService
+from services.uploads import UploadService
 
 
 def create_app(settings: Settings | None = None) -> Flask:
@@ -33,10 +38,14 @@ def create_app(settings: Settings | None = None) -> Flask:
         app.extensions["cart_repository"], app.extensions["product_repository"],
         app.extensions["checkout_repository"],
     )
+    app.extensions["order_repository"] = OrderRepository(settings)
+    app.extensions["upload_service"] = UploadService(UploadRepository(settings))
     register_error_handlers(app)
     app.register_blueprint(products_blueprint)
     app.register_blueprint(cart_blueprint)
     app.register_blueprint(checkout_blueprint)
+    app.register_blueprint(orders_blueprint)
+    app.register_blueprint(uploads_blueprint)
 
     @app.before_request
     def preflight():
