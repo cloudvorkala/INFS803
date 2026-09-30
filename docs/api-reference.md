@@ -11,9 +11,9 @@ Implementation and verification evidence comes from
 | Environment | Base URL |
 | --- | --- |
 | Local development | `http://127.0.0.1:5000` |
-| AWS development | `https://<api-id>.execute-api.ap-southeast-2.amazonaws.com/dev` |
+| AWS development | `https://8lvgv7w3l0.execute-api.ap-southeast-2.amazonaws.com/dev` |
 
-Replace `<api-id>` with the actual deployment output. Append the paths below to
+The AWS URL was supplied by the user after deployment. Append the paths below to
 the base URL. `:id` and `:productId` denote required product-ID path segments;
 replace them with an actual returned ID, URL-encoded as needed. No `/api` prefix
 is used. Local setup is in the [backend README](../backend/README.md).
@@ -76,7 +76,12 @@ GET/DELETE require no request body.
 Browser access requires an exact configured `ALLOWED_ORIGINS` match. CORS
 preflight OPTIONS returns 204 without a JSON body; it is not a business operation.
 Allowed origins receive the configured methods and `Content-Type, Authorization`
-headers. CORS does not replace token validation.
+headers. Allowed-origin OPTIONS responses include `Access-Control-Max-Age: 300`
+so browsers can reuse a matching preflight result for up to five minutes. This
+does not cache API data or skip authentication on actual requests; the first
+preflight is still required. Disallowed origins receive no CORS permission or
+max-age header. The allowed-origin 204 response and 300-second max-age header
+were checked on `dev` on 2026-09-30; actual browser cache reuse remains unverified.
 
 ## 4. Error format
 
@@ -623,8 +628,11 @@ verification here is based on the user's report, not code or generated tests.
 GET /orders and POST /upload_file passed a user-run Postman collection
 (17 requests, 30/30 assertions) on the separate `orderstest` stage on 2026-09-30,
 including two-user order isolation, admin-only upload, validation errors and
-public S3 delivery of the uploaded image. They reach the shared `dev` stage only
-after merge and redeploy. Frontend integration remains unverified.
+public S3 delivery of the uploaded image. The user subsequently confirmed all
+twelve operations deployed to `dev`; an authenticated Orders/Upload retest there
+has not yet been recorded. A read-only `dev` check confirmed GET /products 200
+and allowed-origin OPTIONS 204 with a 300-second preflight max-age. Frontend
+integration and full-page loading performance remain unverified.
 
 The contract's dated 2026-09-11 implementation-status paragraph describes an older
 snapshot with no business routes; it is not the current implementation inventory.
