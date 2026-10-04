@@ -33,8 +33,9 @@ const BLANK = {
 };
 
 /* S3 has no practical limit here, but browsers choke on huge data URLs and
-   API Gateway caps a request body at 10 MB. Keep the client honest. */
-const MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
+   API Gateway caps a request body at 10 MB. Matches the backend's 3 MiB
+   limit (backend/models/uploads.py). Keep the client honest. */
+const MAX_UPLOAD_BYTES = 3 * 1024 * 1024;
 
 export default function Admin() {
   const [products, setProducts] = useState([]);
@@ -98,7 +99,7 @@ export default function Admin() {
     if (!file) return;
 
     if (file.size > MAX_UPLOAD_BYTES) {
-      setError('That image is larger than 2 MB. Please pick a smaller one.');
+      setError('That image is larger than 3 MiB. Please pick a smaller one.');
       e.target.value = '';
       return;
     }
@@ -287,7 +288,7 @@ export default function Admin() {
             />
             <p className={shared.hint}>
               Uploaded via <code>POST /upload_file</code> — the API stores the object in S3 and
-              returns its URL. Max 2 MB.
+              returns its URL. Max 3 MiB.
             </p>
             {uploading && <Loading label="Uploading…" inline />}
             {form.coverUrl && (
