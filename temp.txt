@@ -1,0 +1,1412 @@
+admin-test@test.com
+Test1234!
+
+First prompt:
+
+Read AGENTS.md and the files under /docs.
+Then inspect the repository.
+Do not modify any files yet.
+Explain:
+1. what you understand this backend project is,
+2. what architecture you believe we are using,
+3. what API contract the frontend expects,
+4. what backend work currently appears to be missing,
+5. any contradictions or unresolved decisions you find.
+
+/////////////////
+
+Revise the backend implementation plan using these decisions.
+
+Do not modify any files yet.
+
+Decisions:
+
+1. Preserve the frontend's current Cognito ID token rather than changing to
+   an access token.
+
+2. Protected requests use:
+   Authorization: Bearer <Cognito ID token>
+
+3. For the deployed AWS architecture, prefer an API Gateway Cognito User Pool
+   Authorizer to validate Cognito tokens.
+
+   Flask should consume the verified authentication claims and enforce
+   application-level authorization such as:
+   - authenticated ownership using `sub`
+   - admin membership using the `admins` Cognito group
+
+   Do not duplicate full Cognito JWT verification inside Flask unless a
+   concrete requirement makes it necessary.
+
+4. Keep the existing Paperbound DynamoDB schema.
+
+5. Initially reference existing DynamoDB/S3/Cognito resources through
+   configuration. Do not create replacement resources until their actual AWS
+   state has been verified.
+
+6. Product deletion should not scan all carts. Missing/deleted products may
+   be removed lazily from carts when cart data is read.
+
+7. Keep DynamoDB transactional checkout, but do not implement cart revisions
+   or checkout idempotency keys in the first version.
+
+8. Keep the search implementation proportional to the current 100-product
+   catalogue. Do not introduce a separate search service.
+
+9. Do not change the frontend pagination model.
+
+10. Keep `/upload_file` compatible with the existing frontend contract.
+    Asset delivery strategy remains pending until the existing S3/CloudFront
+    infrastructure is verified.
+
+Now provide the revised implementation plan and list only the decisions that
+still genuinely block coding.
+
+Do not create files.
+Do not deploy or inspect live AWS resources.
+////////////////
+The inspection is correct.
+
+Do not modify any files yet.
+
+Use the following decisions:
+
+1\. The authoritative backend architecture is:
+&#x20;  API Gateway REST API -> AWS Lambda -> serverless-wsgi -> Flask.
+&#x20;  Ignore the old Express/EC2 backend handover as an implementation target.
+
+2\. The Authorization header format will be:
+&#x20;  Authorization: Bearer \<token>
+
+3\. Assume the Cognito admin group is named \`admins\`.
+
+4\. Preserve the existing frontend-facing API paths and observed response
+&#x20;  shapes. Do not modify frontend files.
+
+5\. Prefer the existing Paperbound DynamoDB schema unless you identify a
+&#x20;  concrete technical problem with it.
+
+6\. \`/upload\_file\` must accept \`{ filename, dataUrl }\`, upload the file to S3,
+&#x20;  and return \`{ url, s3Key }\`.
+
+Now produce a backend implementation plan only.
+
+Include:
+\- proposed /backend directory structure,
+\- responsibility of each file,
+\- Pydantic models required,
+\- DynamoDB repository design,
+\- authentication/authorization flow,
+\- checkout transaction design,
+\- S3 upload flow,
+\- serverless.yml resources and IAM permissions,
+\- test strategy,
+\- recommended implementation order.
+
+Clearly identify any remaining decisions that must be resolved before coding.
+
+Do not create or modify files.
+Do not deploy anything.////////////
+
+/////////////
+The revised architecture plan is approved with these additional decisions:
+
+- ShippingAddress fields `fullName`, `line1`, `city`, `postcode`, and `country`
+  are all required and must be non-empty after trimming.
+- Uploads allow only `image/jpeg`, `image/png`, and `image/webp`.
+- Maximum decoded upload size is 3 MiB.
+- Checkout supports a maximum of 40 unique cart lines.
+- Product price must be >= 0.
+- Product stock must be a non-negative integer.
+- Do not add the deprecated standalone serverless-python-requirements plugin
+  unless there is a demonstrated need for it.
+
+Before coding, perform one final read-only inspection specifically for the
+Product model.
+
+Inspect the frontend admin product form, product consumers, seed data, mocks,
+and reference server.
+
+For each Product field:
+- id
+- title
+- author
+- category
+- price
+- stock
+- isbn
+- publishedYear
+- coverUrl
+- description
+
+report:
+1. whether the existing frontend treats it as required or optional,
+2. whether null is currently accepted,
+3. any defaults or validation currently used,
+4. your proposed backend Pydantic rule.
+
+Clearly distinguish observed behaviour from your recommendation and cite the
+relevant file paths and line numbers.
+
+Do not modify files.
+Do not inspect live AWS resources.
+//////////////////
+The revised backend plan is broadly approved, but I now have the actual
+implementation details from my previous Adroit project.
+
+Treat the following as the authoritative architecture baseline from Adroit,
+rather than any earlier assumptions about that project.
+
+Do not modify any files yet.
+Do not deploy anything or inspect live AWS resources.
+
+Architecture decisions
+======================
+
+1. Preserve the same overall backend architecture used by the previous Adroit
+   project where practical:
+
+   API Gateway REST API
+       -> one AWS Lambda
+       -> serverless-wsgi
+       -> Flask application
+
+   The previous project used a single WSGI Lambda behind:
+
+   - ANY /
+   - ANY /{proxy+}
+
+   Flask performed the application routing.
+
+   Prefer this same single-Lambda Flask proxy architecture for Paperbound
+   unless there is a concrete technical reason not to.
+
+2. Authentication should follow the previous Adroit architecture more closely.
+
+   Do NOT use an API Gateway Cognito User Pool Authorizer as the primary
+   authentication mechanism in the first version.
+
+   Instead, protected Flask routes should use reusable Cognito authentication
+   middleware/decorators, similar in architectural role to the previous
+   Adroit project's auth.py.
+
+   Flow:
+
+   Authorization: Bearer <Cognito ID token>
+       -> API Gateway proxy
+       -> Lambda / serverless-wsgi
+       -> Flask authentication decorator
+       -> verified Cognito claims
+       -> route/domain logic
+
+3. The frontend currently uses a Cognito ID token.
+
+   Preserve that decision.
+
+   Protected requests use exactly:
+
+   Authorization: Bearer <Cognito ID token>
+
+4. The Flask authentication layer should preserve the successful Adroit pattern
+   but improve validation where appropriate.
+
+   It should:
+
+   - require the Bearer header format,
+   - fetch Cognito JWKS using the configured User Pool,
+   - cache public keys in memory where appropriate,
+   - verify the JWT signature,
+   - verify expiration,
+   - verify issuer,
+   - verify that token_use is `id`,
+   - verify the ID token audience matches the configured Cognito App Client ID,
+   - fail closed on malformed or unverifiable tokens.
+
+   After successful verification, expose trusted claims to the request context
+   in a reusable way.
+
+   Do not merely decode an unverified token.
+
+5. User identity must come only from the verified Cognito `sub` claim.
+
+   Do not accept userId from request bodies or query parameters for cart or
+   order ownership.
+
+6. Admin-only operations require exact membership in the Cognito group:
+
+   admins
+
+   using the verified `cognito:groups` claim.
+
+7. Public routes:
+
+   - GET /products
+   - GET /products/:id
+
+   do not require the Cognito decorator.
+
+   Protected and admin routes use the appropriate authentication and
+   authorization decorators inside Flask.
+
+8. Keep the existing Paperbound DynamoDB schema:
+
+   Paperbound-Products
+     partition key: id
+
+   Paperbound-Carts
+     partition key: userId
+     sort key: productId
+
+   Paperbound-Orders
+     partition key: userId
+     sort key: placedAtOrderId
+
+   Preserve the existing product indexes.
+
+9. Initially reference existing DynamoDB, S3, and Cognito resources through
+   configuration/environment variables.
+
+   Do not create replacement resources until their actual AWS state has been
+   separately verified.
+
+10. Continue using the architectural separation that existed in Adroit:
+
+    - Flask/API layer for HTTP handling and orchestration,
+    - Pydantic models/DTOs for frontend/backend contracts,
+    - AWS repository/service code separated from routes,
+    - domain/business logic separated from HTTP handling.
+
+    The new project may use a slightly more modular directory structure than
+    Adroit, but do not add abstraction merely for its own sake.
+
+11. The previous Adroit project used boto3 from service modules and environment
+    variables for AWS configuration.
+
+    Preserve that pattern.
+
+    However, do not copy historical implementation weaknesses such as overly
+    broad IAM permissions. Use least-privilege IAM for the Paperbound tables
+    and S3 prefix.
+
+12. Prefer the same runtime/region baseline as the previous project unless the
+    existing Paperbound infrastructure requires otherwise:
+
+    - Python 3.12
+    - ap-southeast-2
+
+13. Do not copy Adroit-specific business logic.
+
+    Paperbound must not contain concepts such as:
+    - WolkAbout/Adroit platform integration,
+    - tenants,
+    - rule compilation,
+    - AST/DSL logic,
+    - feeds,
+    - actuators.
+
+Current Paperbound decisions
+============================
+
+14. ShippingAddress fields:
+
+    - fullName
+    - line1
+    - city
+    - postcode
+    - country
+
+    are all required and must be non-empty after trimming.
+
+15. Uploads allow only:
+
+    - image/jpeg
+    - image/png
+    - image/webp
+
+    Maximum decoded upload size: 3 MiB.
+
+16. POST /upload_file remains:
+
+    { filename, dataUrl }
+        -> backend validates and decodes
+        -> backend uploads to S3
+        -> returns { url, s3Key }
+
+    Do not replace this with a presigned upload workflow.
+
+    The final asset delivery URL strategy remains pending until existing
+    S3/CloudFront infrastructure is verified.
+
+17. Checkout supports a maximum of 40 unique cart lines.
+
+18. Product price must be >= 0.
+
+19. Product stock must be a non-negative integer.
+
+20. Keep DynamoDB transactional checkout.
+
+    Do not add cart revision fields or checkout idempotency keys in the first
+    version.
+
+21. Product deletion must not scan all user carts.
+
+    Missing/deleted product references may be omitted and lazily cleaned from
+    carts when the cart is read.
+
+22. Keep product search proportional to the current approximately 100-product
+    catalogue.
+
+    Do not introduce a separate search service.
+
+23. Frontend pagination remains unchanged. The backend returns the complete
+    matching product result set.
+
+24. Treat docs/api-contract.md as the frontend/backend compatibility boundary.
+
+    Do not modify frontend files.
+
+25. Preserve the currently observed frontend response conventions, but clearly
+    distinguish between:
+    - formally documented contract,
+    - observed frontend behaviour,
+    - recommendation.
+
+26. Do not automatically copy the previous Adroit project's exact
+    serverless.yml dependency/plugin choices.
+
+    Preserve the architecture, but only add Serverless plugins and packaging
+    dependencies that are actually needed by the current Paperbound project.
+
+Final read-only inspection before coding
+========================================
+
+Before coding, perform one final read-only inspection specifically for the
+Product contract.
+
+Inspect the current repository's:
+
+- frontend admin product form,
+- product API consumers,
+- product types/models if present,
+- seed data,
+- mocks,
+- reference server.
+
+For each Product field:
+
+- id
+- title
+- author
+- category
+- price
+- stock
+- isbn
+- publishedYear
+- coverUrl
+- description
+
+report:
+
+1. whether the existing frontend treats it as required or optional,
+2. whether null is currently accepted,
+3. any defaults currently used,
+4. any frontend validation currently used,
+5. behaviour in the reference server/mocks,
+6. your proposed backend Pydantic rule.
+
+For every factual statement about the current repository, classify it as one
+of:
+
+- Documented requirement
+- Observed implementation
+- Inference
+- Recommendation
+
+For observed implementation, provide the relevant file path and line numbers
+where practical.
+
+Also report whether the new authentication/deployment decisions above conflict
+with any current Paperbound files or documentation. Do not resolve such
+conflicts by modifying files; only identify them.
+
+At the end, list only the genuinely unresolved decisions that still block the
+first backend implementation step.
+
+Do not create or modify files.
+Do not change Git state.
+Do not inspect or modify live AWS resources.
+///////////////
+The project documentation is now authoritative.
+
+Begin the first backend implementation step.
+
+Read AGENTS.md and all relevant files under /docs before making changes.
+
+For this step, create only the backend foundation.
+
+Implement:
+
+1. Flask application scaffolding.
+2. Configuration loading and validation.
+3. Reusable Cognito ID-token authentication middleware/decorator following
+   the documented architecture.
+4. Authenticated/admin authorization helpers.
+5. Pydantic Product, Cart, Order, ShippingAddress, and Upload contracts
+   exactly matching docs/api-contract.md.
+6. Consistent `{ "message": "..." }` error handling.
+7. requirements.txt and local test dependencies as needed.
+8. Initial Serverless Framework configuration for:
+   - Python 3.12
+   - ap-southeast-2
+   - one Lambda
+   - serverless-wsgi
+   - API Gateway REST API
+   - ANY /
+   - ANY /{proxy+}
+   - environment-variable references only
+   - no creation of DynamoDB, S3, or Cognito resources yet.
+9. Unit tests for:
+   - Pydantic validation,
+   - Bearer header parsing,
+   - authentication failure cases,
+   - admin group detection.
+
+Do NOT implement:
+- product repository/database operations,
+- cart persistence,
+- checkout,
+- orders persistence,
+- S3 upload execution.
+
+Do not modify /frontend.
+Do not deploy anything.
+Do not inspect live AWS resources.
+Do not perform Git commits or pushes.
+
+Before changing files, briefly list the files you intend to create or modify.
+
+After implementation:
+- run the relevant local tests,
+- show the changed-file list,
+- summarize the implementation,
+- report test results,
+- report assumptions and unresolved issues.
+Implement the next Paperbound backend feature now.
+
+Do not first explain your plan.
+Do not ask for confirmation unless you encounter a genuine blocking ambiguity.
+Do not generate new tests.
+Keep the final report concise.
+
+Read AGENTS.md and the relevant /docs files silently, inspect the existing
+backend implementation, then make the required changes directly.
+
+Scope
+=====
+
+Implement these three admin-only endpoints:
+
+- POST /products
+- PUT /products/:id
+- DELETE /products/:id
+
+Do not modify the existing working GET /products or GET /products/:id behavior
+except where shared repository code genuinely requires it.
+
+Do not modify /frontend.
+Do not deploy anything.
+Do not create or modify AWS infrastructure.
+Do not change Git state.
+
+Authentication / authorization
+==============================
+
+All three endpoints require:
+
+Authorization: Bearer <Cognito ID token>
+
+Use the existing Flask Cognito authentication implementation.
+
+Admin authorization requires exact membership in the Cognito group:
+
+admins
+
+Expected behavior:
+
+- missing/invalid authentication -> 401
+- authenticated non-admin user -> 403
+- authenticated admin user -> continue
+
+Never trust a client-supplied userId, role, group, or identity header.
+
+Product contract
+================
+
+Writable Product fields:
+
+- title
+- author
+- category
+- price
+- stock
+- isbn
+- publishedYear
+- coverUrl
+- description
+
+`id` is server-owned and must not be accepted in create/update payloads.
+
+Create rules:
+
+- title: required, trimmed, non-empty
+- author: required, trimmed, non-empty
+- category: required, trimmed, non-empty
+- price: required finite numeric value >= 0
+- stock: optional, default 0, non-negative integer
+- isbn: optional, default ""
+- publishedYear:
+  - optional
+  - default current year
+  - allow 0 for unknown
+  - otherwise require integer 1400..2100
+- coverUrl:
+  - optional
+  - nullable
+  - empty string normalizes to null
+- description:
+  - optional
+  - default ""
+
+Update rules:
+
+- all writable fields optional
+- omitted field means unchanged
+- id is never writable
+- explicit null follows the documented field rules
+- do not overwrite unspecified fields
+
+POST /products
+==============
+
+Admin only.
+
+Generate the product ID server-side.
+
+Use a sufficiently collision-resistant ID consistent with the existing
+Paperbound conventions where practical.
+
+Store the product in the configured DynamoDB Products table.
+
+Also maintain the storage-only `searchText` field using the normalized
+searchable fields needed by the existing GET search implementation.
+
+Use a conditional write so an existing product ID cannot be overwritten.
+
+Return:
+
+HTTP 201
+
+<Product object>
+
+The returned Product object must contain only:
+
+- id
+- title
+- author
+- category
+- price
+- stock
+- isbn
+- publishedYear
+- coverUrl
+- description
+
+Do not expose `searchText`.
+
+PUT /products/:id
+=================
+
+Admin only.
+
+If the product does not exist:
+
+HTTP 404
+
+{
+  "message": "Product not found."
+}
+
+Apply only supplied fields.
+
+Use the existing ProductUpdate model / changes() mechanism where appropriate.
+
+If title, author, or ISBN changes, update `searchText` consistently.
+
+Do not permit changing the product ID.
+
+Return:
+
+HTTP 200
+
+<updated Product object>
+
+DELETE /products/:id
+====================
+
+Admin only.
+
+If the product does not exist:
+
+HTTP 404
+
+{
+  "message": "Product not found."
+}
+
+Delete only the product record.
+
+Do not scan all carts.
+
+Stale cart references will be handled later through lazy cleanup.
+
+Return the documented deletion response:
+
+HTTP 200
+
+{
+  "deleted": "<product-id>"
+}
+
+Repository / DynamoDB rules
+===========================
+
+Keep Flask routes thin.
+
+Use the existing repository layer.
+
+Do not place boto3 calls directly in route handlers.
+
+Use the configured table name:
+
+PRODUCTS_TABLE
+
+Use deliberate DynamoDB-to-Pydantic mapping.
+
+Do not return raw DynamoDB dictionaries.
+
+Handle DynamoDB Decimal values deliberately.
+
+Use appropriate conditional expressions for create/update/delete so behavior
+is safe under concurrent access where practical.
+
+Do not add tables, indexes, OpenSearch, or new AWS services.
+
+Error handling
+==============
+
+Use the existing request-validation boundary and API error envelope.
+
+Expected categories:
+
+- invalid request body -> 400
+- unauthenticated -> 401
+- authenticated but non-admin -> 403
+- product not found -> 404
+- relevant write conflict -> 409 if appropriate
+- unexpected DynamoDB/internal failure -> safe 500
+
+Do not expose AWS exception details, tokens, or sensitive request data.
+
+Validation
+==========
+
+Perform only lightweight validation:
+
+- Python syntax/import checks
+- Flask route registration inspection
+- basic static/config checks
+
+Do not create new unit tests.
+Do not rely on generated test pass counts as evidence.
+Documentation update
+====================
+
+After the implementation and local validation succeed, update:
+
+docs/current-status.md
+
+to reflect that the following backend operations are implemented:
+
+- GET /products
+- GET /products/:id
+- POST /products
+- PUT /products/:id
+- DELETE /products/:id
+
+Record any remaining manual integration work accurately.
+
+Do not change docs/api-contract.md or docs/architecture.md unless the
+implementation reveals an actual conflict with the documented contract or
+architecture. If such a conflict exists, report it instead of silently
+changing those documents.
+
+This is an explicit exception to the normal rule restricting modifications
+outside /backend.
+
+Do not provide a separate explanation before updating the document.
+
+Final response
+==============
+
+After finishing, report only:
+
+1. files changed,
+2. implemented endpoints,
+3. validation/checks performed,
+4. documentation updated,
+5. anything that still requires manual Postman/AWS verification.
+
+Keep the final response concise.
+
+////////////////////////////////
+Prepare the Paperbound backend for its first AWS dev deployment.
+
+Do not explain your plan first.
+Do not deploy anything.
+Do not run destructive AWS commands.
+Do not create or modify application AWS resources.
+Do not modify frontend.
+Do not change Git state.
+Do not generate tests.
+Keep the final response concise.
+
+Read AGENTS.md, relevant /docs files, and inspect the current backend/serverless
+configuration silently, then make only the changes required for a safe first
+deployment.
+
+Deployment target
+=================
+
+AWS region:
+ap-southeast-2
+
+Runtime:
+Python 3.12
+
+Architecture:
+API Gateway REST API
+-> single Lambda
+-> serverless-wsgi
+-> Flask
+
+Keep the existing proxy routing:
+
+- ANY /
+- ANY /{proxy+}
+
+Existing application resources
+==============================
+
+These already exist and MUST be referenced, not recreated:
+
+- Cognito User Pool
+- Cognito App Client
+- Paperbound-Products DynamoDB table
+- Paperbound-Carts DynamoDB table
+- Paperbound-Orders DynamoDB table
+- existing uploads S3 bucket
+
+Do not add these resources under CloudFormation Resources.
+
+Environment variables
+=====================
+
+Ensure Lambda receives the existing application settings from deployment-time
+environment variables, including:
+
+- AWS_REGION
+- COGNITO_USER_POOL_ID
+- COGNITO_APP_CLIENT_ID
+- PRODUCTS_TABLE
+- CARTS_TABLE
+- ORDERS_TABLE
+- UPLOADS_BUCKET
+- ALLOWED_ORIGINS
+- JWKS_CACHE_SECONDS
+- JWKS_TIMEOUT_SECONDS
+
+Use the existing local .env for deployment-time variable resolution where
+appropriate.
+
+Do not package .env into Lambda.
+Do not commit secrets or credentials.
+
+IAM
+===
+
+Add least-privilege Lambda execution permissions required by the CURRENT
+implemented backend only.
+
+For the current Products implementation, derive the exact DynamoDB actions from
+the repository code, such as those actually required for:
+
+- listing products
+- getting one product
+- creating a product
+- updating a product
+- deleting a product
+
+Scope permissions to the existing Paperbound-Products table and its indexes only
+if indexes are actually accessed.
+
+Do not add broad dynamodb:* permissions.
+
+Do not add Cart, Orders, or S3 write permissions yet unless current application
+startup genuinely requires them.
+
+Packaging
+=========
+
+Ensure dependencies can be packaged correctly for AWS Lambda Python 3.12
+x86_64 when deployment is initiated from the current Windows development
+environment.
+
+Review the existing Serverless Framework / Python requirements configuration
+and make only necessary fixes.
+
+Do not change application architecture.
+
+Serverless deployment bucket
+============================
+
+It is acceptable for Serverless Framework to use/create its own deployment
+artifact bucket.
+
+This is separate from the Paperbound application uploads bucket.
+
+Do not configure the application uploads bucket as the Serverless deployment
+bucket.
+
+CORS
+====
+
+Do not weaken the existing exact-origin CORS policy.
+
+Keep localhost allowed for development.
+
+Do not invent a production frontend URL if none exists yet.
+
+Validation
+==========
+
+Perform only:
+
+- syntax/config inspection
+- serverless config/package dry validation where possible
+- dependency/config checks
+
+Do not deploy.
+
+Documentation
+=============
+
+Update docs/current-status.md only if needed to record that the backend is
+prepared for first AWS deployment but has NOT yet been deployed/verified.
+
+Do not modify api-contract.md or architecture.md unless there is a genuine
+conflict; report conflicts instead of silently changing them.
+
+Final response
+==============
+
+Report only:
+
+1. files changed,
+2. IAM permissions added,
+3. deployment configuration changes,
+4. local validation performed,
+5. exact command I should run next to perform the first deployment,
+6. anything I must install/login/configure before running that command.
+
+Keep it concise.
+///////////////
+Implement the next Paperbound backend feature: POST /checkout only.
+
+Do not explain your plan first.
+Do not ask for confirmation unless there is a genuine blocking ambiguity.
+Do not generate new tests.
+Do not deploy anything.
+Do not modify frontend.
+Do not change Git state.
+Keep the final response concise.
+
+Read AGENTS.md, docs/api-contract.md, docs/api-reference.md,
+docs/current-status.md, the existing models/routes/repositories/services, and
+the frontend contract information available in the repository silently.
+
+Then implement the feature directly.
+
+IMPORTANT SCOPE
+===============
+
+Implement ONLY:
+
+POST /checkout
+
+Do NOT implement:
+
+- GET /orders
+- POST /upload_file
+
+Those two endpoints are intentionally reserved for another backend team member.
+
+Do not make unrelated refactors.
+
+Authentication / ownership
+==========================
+
+POST /checkout requires:
+
+Authorization: Bearer <Cognito ID token>
+
+Use the existing Flask Cognito authentication implementation.
+
+The user identity MUST come only from the verified Cognito:
+
+sub
+
+Never accept a client-supplied userId, owner, role, or group.
+
+Checkout may only operate on the authenticated user's cart.
+
+Request contract
+================
+
+Request body:
+
+{
+  "shippingAddress": {
+    "fullName": "...",
+    "line1": "...",
+    "city": "...",
+    "postcode": "...",
+    "country": "..."
+  }
+}
+
+All five shipping-address fields are required.
+
+Each must:
+
+- be a string,
+- be trimmed,
+- remain non-empty after trimming.
+
+Reject:
+
+- missing fields,
+- null,
+- unknown fields,
+- client-supplied userId,
+- invalid types.
+
+Follow existing request-boundary conventions and Pydantic models.
+
+If matching Checkout / ShippingAddress / Order models already exist, reuse or
+extend them rather than creating duplicate schemas.
+
+Cart rules
+==========
+
+Read only the authenticated Cognito sub user's cart.
+
+Use:
+
+CARTS_TABLE
+
+Partition key:
+
+userId = verified Cognito sub
+
+Do not Scan the entire Cart table.
+
+Follow DynamoDB pagination if the user's Query returns LastEvaluatedKey.
+
+Checkout must fail safely if the cart is empty.
+
+Use the exact status/message already defined by api-contract.md or existing
+models/docs if specified.
+
+If the authoritative contract does not define the empty-cart message, use a
+concise 400 business-validation error and document it consistently.
+
+Maximum checkout size
+=====================
+
+Enforce the existing design limit:
+
+maximum 40 unique cart lines per checkout.
+
+If the cart exceeds 40 unique product lines, reject checkout before attempting
+the transaction.
+
+This limit exists so the atomic DynamoDB transaction remains safely below
+DynamoDB transaction operation limits.
+
+Products / stock
+================
+
+For every cart line:
+
+- load the current Product from PRODUCTS_TABLE;
+- Product must still exist;
+- use current Product data as source of truth;
+- current stock must be >= requested cart quantity.
+
+Do not trust Product title, author, price, stock, or other Product details from
+the client or cart payload.
+
+Use current Product data to construct immutable order-item snapshots.
+
+If a Product referenced by the cart no longer exists, checkout must fail
+without creating an Order and without partially modifying stock/cart state.
+
+If stock is insufficient, checkout must fail without partial side effects.
+
+Use the existing documented error/status conventions where defined.
+
+Order contract
+==============
+
+Create one Order belonging to the authenticated user.
+
+Use the configured:
+
+ORDERS_TABLE
+
+Existing key schema:
+
+- partition key: userId
+- sort key: placedAtOrderId
+
+Use the existing documented sort-key convention:
+
+<ISO timestamp>#<orderId>
+
+Generate orderId server-side with a collision-resistant identifier consistent
+with existing Paperbound ID conventions.
+
+The returned Order must follow the authoritative existing API contract.
+
+Expected top-level fields include:
+
+- orderId
+- userId
+- placedAt
+- status
+- shippingAddress
+- items
+- total
+
+Inspect api-contract.md / existing models / frontend expectations for the exact
+Order item fields and use those exactly.
+
+Do not invent additional public response fields.
+
+Order item data must be a snapshot at checkout time, not dynamically resolved
+from Products later.
+
+At minimum, preserve the current checkout-time values required by the
+documented frontend Order contract, including product identity, descriptive
+fields required by the contract, unit price, quantity, and subtotal.
+
+Money / totals
+==============
+
+Use Decimal internally for monetary calculations.
+
+For each line:
+
+subtotal = current Product price * cart quantity
+
+Order total = sum of all line subtotals.
+
+Do not calculate authoritative totals from client input.
+
+Public JSON output must contain JSON numbers, not numeric strings and not raw
+DynamoDB Decimal objects.
+
+Use existing explicit Pydantic response models / API response helpers.
+
+Do not return raw DynamoDB dictionaries directly.
+
+Atomic checkout transaction
+===========================
+
+Checkout must be atomic.
+
+Use DynamoDB TransactWriteItems (or the existing equivalent abstraction) so
+that successful checkout performs all required state changes as one atomic
+transaction.
+
+A successful transaction should atomically:
+
+1. create the Order,
+2. decrement stock for every Product by the checked-out quantity,
+3. remove every checked-out cart line.
+
+Use conditional expressions to protect against concurrent stock changes and
+other relevant concurrent mutations.
+
+Product stock must never become negative.
+
+Do not:
+
+- create the Order first and clean up later,
+- decrement some Products outside the transaction,
+- delete cart rows in a separate best-effort phase.
+
+If the transaction fails, there must be no partially-created order, no partial
+stock decrement, and no partially-cleared cart.
+
+Concurrency
+===========
+
+Protect the checkout transaction against relevant concurrent changes.
+
+At minimum:
+
+- Product stock update must conditionally require enough current stock.
+- Cart deletion should protect against silently checking out a meaningfully
+  changed line where practical using the existing cart representation and
+  conventions.
+
+Map transaction cancellation / stock conflict into the documented safe business
+response rather than exposing raw AWS exceptions.
+
+Do not add a cart revision/idempotency-key system in v1.
+
+Do not add checkout idempotency in this task.
+
+Repository / service structure
+==============================
+
+Keep Flask routes thin.
+
+Prefer a structure consistent with the existing backend, for example:
+
+route
+  -> checkout/order service
+      -> cart repository
+      -> product repository
+      -> order repository / DynamoDB transaction layer
+
+Reuse existing repositories and conversion helpers where appropriate.
+
+Do not duplicate Product or Cart DynamoDB mapping logic unnecessarily.
+
+Do not put boto3 calls directly in Flask route handlers.
+
+Create a dedicated repository/service abstraction for Order persistence or
+checkout transaction handling if needed.
+
+DynamoDB / IAM
+==============
+
+Update serverless.yml only with the additional least-privilege DynamoDB
+permissions required for POST /checkout.
+
+Keep all existing Product and Cart permissions.
+
+Add access only to the existing Orders table and transaction actions actually
+required by the implementation.
+
+The Lambda may need permissions such as, where actually used:
+
+- dynamodb:TransactWriteItems
+
+Scope transaction resource ARNs only to:
+
+- configured Products table
+- configured Carts table
+- configured Orders table
+
+Add any Orders-table direct action only if the implementation actually uses it.
+
+Do not use:
+
+dynamodb:*
+
+Do not grant unrelated S3 permissions.
+
+Do not add infrastructure resources.
+
+Do not create or modify DynamoDB tables/indexes.
+
+Error handling
+==============
+
+Follow the existing JSON error envelope:
+
+{
+  "message": "..."
+}
+
+Expected categories include:
+
+- invalid request body/address -> 400
+- empty cart -> documented 400 behavior
+- too many cart lines -> 400
+- missing/invalid Cognito token -> 401
+- missing Product -> 404 where contractually defined
+- insufficient stock / concurrent checkout conflict -> documented 409 behavior
+- unexpected DynamoDB/internal failure -> safe 500
+
+Do not expose:
+
+- AWS exception details,
+- transaction cancellation internals,
+- tokens,
+- credentials,
+- internal table names where unnecessary.
+
+Validation
+==========
+
+Perform lightweight validation only:
+
+- Python syntax/import checks
+- Flask route registration inspection
+- model/schema inspection
+- Serverless config inspection
+- IAM scope inspection
+- static transaction-operation-count reasoning for the 40-line maximum
+
+Do not create new tests.
+Do not use generated test pass counts as evidence.
+Do not call live AWS APIs.
+Do not deploy.
+
+API documentation
+=================
+
+Update:
+
+docs/api-reference.md
+
+Add the implemented POST /checkout API with:
+
+- authentication requirement
+- request body
+- shippingAddress validation
+- successful Order response shape
+- cart/stock behavior
+- atomic transaction behavior relevant to callers
+- 40-line maximum
+- relevant status codes
+- concise curl example
+
+Move POST /checkout out of the "Future/not-yet-implemented" list.
+
+Do NOT mark it as locally or AWS manually verified yet.
+
+Leave:
+
+GET /orders
+POST /upload_file
+
+clearly listed as not yet implemented.
+
+Do not document internal implementation details that frontend callers do not
+need, except where useful to explain checkout atomicity and conflict behavior.
+
+Status documentation
+====================
+
+Update:
+
+docs/current-status.md
+
+Record:
+
+POST /checkout = implemented
+
+but NOT manually verified and NOT AWS verified.
+
+Preserve the existing manually verified Product CRUD and Cart status.
+
+Cart has now been manually verified locally and through the deployed AWS API,
+including user isolation between two Cognito users.
+
+Update that Cart verification status if current-status.md has not yet been
+updated to reflect this fact.
+
+Do not mark GET /orders or POST /upload_file as implemented.
+
+Do not modify docs/api-contract.md unless you discover a genuine conflict.
+If implementation cannot satisfy the authoritative contract, report the
+conflict rather than silently rewriting the contract.
+
+Team ownership boundary
+=======================
+
+Do not implement or scaffold business behavior for:
+
+GET /orders
+POST /upload_file
+
+It is acceptable for reusable Order models/repository primitives created for
+checkout to later support GET /orders, but do not add the GET /orders Flask
+route or its service behavior.
+
+Likewise, do not touch upload/S3 functionality.
+
+Final response
+==============
+
+Report only:
+
+1. files changed,
+2. POST /checkout behavior implemented,
+3. transaction/concurrency approach,
+4. IAM changes,
+5. documentation updated,
+6. lightweight validation performed,
+7. exact manual Postman/AWS verification still required.
+
+Keep the final response concise.
+//
+
+python -m flask --app app:create_app run
+
+//
+aws cognito-idp initiate-auth \
+  --region ap-southeast-2 \
+  --client-id 1m3kra2v7a95sph3us13e59bfq\
+  --auth-flow USER_PASSWORD_AUTH \
+  --auth-parameters USERNAME='admin-test@test.com',PASSWORD='YourStrongTestPassword123!' \
+  --query 'AuthenticationResult.IdToken' \
+  --output text
+
+
+  //
+  aws cognito-idp admin-create-user \
+  --region ap-southeast-2 \
+  --user-pool-id ap-southeast-2_kGqZevk6X \
+  --username 'normal-test@test.com' \
+  --message-action SUPPRESS
+
+  aws cognito-idp admin-set-user-password \
+  --region ap-southeast-2 \
+  --user-pool-id ap-southeast-2_kGqZevk6X \
+  --username 'normal-test@test.com' \
+  --password 'YourStrongNormalPassword123!' \
+  --permanent
+  //
+  aws cognito-idp initiate-auth \
+  --region ap-southeast-2 \
+  --client-id 1m3kra2v7a95sph3us13e59bfq\
+  --auth-flow USER_PASSWORD_AUTH \
+  --auth-parameters USERNAME='normal-test@test.com',PASSWORD='YourStrongNormalPassword123!' \
+  --query 'AuthenticationResult.IdToken' \
+  --output text
