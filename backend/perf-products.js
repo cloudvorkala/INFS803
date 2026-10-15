@@ -26,17 +26,17 @@ export const options = {
     // Steady traffic: 2 -> 20 requests per second over 2 minutes 40 seconds (about 2,200 requests).
     steady: {
       executor: 'ramping-arrival-rate',
-      startTime: '10s',
+      startTime: '3s',
       startRate: 2,
       timeUnit: '1s',
       preAllocatedVUs: 20,
       maxVUs: 60,
       stages: [
-        { target: 5, duration: '30s' },
-        { target: 10, duration: '60s' },
+        { target: 5, duration: '20s' },
+        { target: 10, duration: '40s' },
         { target: 20, duration: '30s' },
-        { target: 20, duration: '30s' },
-        { target: 0, duration: '10s' },
+        { target: 20, duration: '40s' },
+        { target: 0, duration: '5s' },
       ],
       tags: { phase: 'steady' },
     },

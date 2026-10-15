@@ -19,7 +19,7 @@ cd backend
 k6 run perf-products.js
 ```
 
-The run takes about 3 minutes. It prints the summary and writes `perf-products-summary.json`
+The run takes about 2½ minutes. It prints the summary and writes `perf-products-summary.json`
 (do not commit it if you prefer a clean repository).
 
 ## What to capture for the report
@@ -34,7 +34,7 @@ The run takes about 3 minutes. It prints the summary and writes `perf-products-s
 ## Sentences to adapt in Section 7.8 (fill in the measured values)
 
 > We load-tested GET /products with k6 on <date>: <N> requests ramping from 2 to 20 requests
-> per second over 2 min 40 s. The error rate was <x>% (target < 1%). Steady-state latency was
+> per second over 2 min 15 s, holding 20 per second for the last 40 s. The error rate was <x>% (target < 1%). Steady-state latency was
 > p50 <a> ms, p95 <b> ms and p99 <c> ms against a p95 target of 1,500 ms. The first request after
 > 15 idle minutes took <d> ms, which is the Lambda cold start; warm requests averaged <e> ms.
 > CloudWatch shows concurrent executions rising to <k> as the rate increased and falling back
