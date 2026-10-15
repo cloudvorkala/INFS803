@@ -1,7 +1,6 @@
-from flask import jsonify, request
-
 from app import create_app
 from errors import ApiError
+from http_helpers import api_response, parse_json_request
 from models.products import ProductCreate
 
 
@@ -9,7 +8,8 @@ def test_foundation_errors_and_cors(settings):
     app = create_app(settings)
     @app.post("/test-validation")
     def validate():
-        return jsonify(ProductCreate.model_validate(request.get_json()))
+        # Same boundary as the real routes: client-body errors become 400, responses use api_response().
+        return api_response(parse_json_request(ProductCreate))
     @app.get("/test-failure")
     def fail():
         raise RuntimeError("private implementation details")
@@ -18,11 +18,12 @@ def test_foundation_errors_and_cors(settings):
         raise ApiError(409, "Stock changed.")
 
     client = app.test_client()
-    response = client.get("/products", headers={"Origin": "http://localhost:5173"})
+    # An unregistered route exercises the shared 404 envelope and CORS without AWS access.
+    response = client.get("/no-such-route", headers={"Origin": "http://localhost:5173"})
     assert response.status_code == 404
     assert set(response.json) == {"message"}
     assert response.headers["Access-Control-Allow-Origin"] == "http://localhost:5173"
-    assert "Access-Control-Allow-Origin" not in client.get("/products", headers={"Origin": "https://untrusted.example"}).headers
+    assert "Access-Control-Allow-Origin" not in client.get("/no-such-route", headers={"Origin": "https://untrusted.example"}).headers
     assert client.options("/cart").status_code == 204
     response = client.post("/test-validation", json={"title": "secret-value"})
     assert response.status_code == 400
@@ -42,7 +43,7 @@ def test_wsgi_rest_proxy(settings, monkeypatch):
     import lambda_handler
     monkeypatch.setattr(lambda_handler, "get_application", lambda: create_app(settings))
     event = {
-        "httpMethod": "GET", "path": "/products", "resource": "/{proxy+}",
+        "httpMethod": "GET", "path": "/no-such-route", "resource": "/{proxy+}",
         "headers": {"Host": "local.example", "X-Forwarded-Proto": "https"},
         "requestContext": {"stage": "dev", "identity": {"sourceIp": "127.0.0.1"}},
         "queryStringParameters": None, "body": None, "isBase64Encoded": False,
