@@ -1,5 +1,8 @@
 # Paperbound
 
+[![Backend tests](https://github.com/cloudvorkala/INFS803/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/cloudvorkala/INFS803/actions/workflows/backend-tests.yml)
+[![Deploy backend](https://github.com/cloudvorkala/INFS803/actions/workflows/backend-deploy.yml/badge.svg)](https://github.com/cloudvorkala/INFS803/actions/workflows/backend-deploy.yml)
+
 Paperbound is an online bookstore developed for **INFS803 Cloud Computing 2026, Assignment 2, Option B**. It separates the React client, a cloud-hosted REST API, and managed application data and asset storage.
 
 Users can browse the 100-book catalogue, search and filter books, manage their own cart, check out, and view order history. Administrators can manage products and upload cover images.

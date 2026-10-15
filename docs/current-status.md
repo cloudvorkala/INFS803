@@ -56,6 +56,15 @@ Implemented on `refector/GET_refector`, without frontend changes:
   responses followed by a successful read, allowed/disallowed-origin preflights,
   and unauthenticated protected-route rejection. These are offline checks, not
   an AWS load test or measured end-to-end performance improvement.
+- 15 Oct 2026 suite repair: the three obsolete foundation assertions were
+  replaced. `test_app.py` now exercises the 404 envelope and CORS through an
+  unregistered route and validates through `parse_json_request`/`api_response`;
+  `test_serverless.py` now asserts the least-privilege IAM statements instead of
+  the absence of IAM. `requirements.txt` and `requirements-dev.txt` pin the
+  versions in the team virtual environment (PyJWT 2.13.0 among them; newer
+  PyJWT breaks the JWKS test stub). Full suite on Python 3.12: 147 passed,
+  0 failed. CI: `.github/workflows/backend-tests.yml` runs the same suite on
+  every push and pull request that touches `backend/`.
 
 The user subsequently confirmed deployment to `dev`. A read-only live check of
 `GET /products` returned 200 and eight products on four consecutive requests:
